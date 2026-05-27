@@ -1,19 +1,60 @@
 
     <!DOCTYPE html>
-    <html lang="zh-CN">
+    <html>
     <head>
       <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Learning</title>
       <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; }
-        h1 { color: #333; }
-        p { color: #666; font-size: 18px; }
+        /* 控制所有页面的背景和文字颜色 */
+        body { 
+          background-color: #ffffff; 
+          color: #000000; 
+          font-family: Arial, sans-serif;
+          margin: 0; 
+          padding-top: 60px; /* 给顶部的固定按钮栏留出 60px 空间，防止遮挡内容 */
+        }
+        
+        /* Fixed Button 栏的样式，永远固定在最上端 */
+        .fixed-navbar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          background-color: #222; /* 导航栏底色，你可以改 */
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .fixed-navbar a {
+          color: white;
+          text-decoration: none;
+          margin: 0 20px;
+          font-weight: bold;
+          font-size: 16px;
+        }
+        .fixed-navbar a:hover { color: #4CAF50; }
+        
+        /* 页面居中容器 */
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
       </style>
     </head>
     <body>
-      <h1>Learning</h1>
-      <p>尝试中</p>
-    </body>
-    </html>
-  
+      <div class="fixed-navbar">
+        <a href="index.html">首页</a><a href="product.html">产品</a><a href="contact.html">联系我们</a>
+      </div>
+      <div class="container">
+  <h1>欢迎来到主页</h1>
+      <div style="margin-bottom:40px; padding:20px; border-bottom:1px solid #ddd;">
+        <h2>欢迎来到我的世界</h2> <p></p>   </div>
+    
+      <div style="margin-bottom:40px; padding:20px; border-bottom:1px solid #ddd;">
+        <h2>你想要拥有自己的网页吗？</h2> <p>在这里你可以选择你想要的风格，我们可以帮你完成所有步骤。</p>   </div>
+    
+      <div style="margin-bottom:40px; padding:20px; border-bottom:1px solid #ddd;">
+        <h2>你想要拥有自己的视频吗？</h2> <p>在这里我们可以为你提供你想要的视频，只要提供你的构想。</p>   </div>
+    
+      <div style="margin-bottom:40px; padding:20px; border-bottom:1px solid #ddd;">
+        <h2>你想要拥有自己的游戏吗？</h2> <p>在这里我们可以为你设计出由你提供的构想而成的游戏。</p>   </div>
+    </div></body></html>
