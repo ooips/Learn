@@ -1,0 +1,56 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <style>
+        /* 控制所有页面的背景和文字颜色 */
+        body { 
+          background-color: #ffffff; 
+          color: #000000; 
+          font-family: Arial, sans-serif;
+          margin: 0; 
+          padding-top: 60px; /* 给顶部的固定按钮栏留出 60px 空间，防止遮挡内容 */
+        }
+        
+        /* Fixed Button 栏的样式，永远固定在最上端 */
+        .fixed-navbar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          background-color: #222; /* 导航栏底色，你可以改 */
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .fixed-navbar a {
+          color: white;
+          text-decoration: none;
+          margin: 0 20px;
+          font-weight: bold;
+          font-size: 16px;
+        }
+        .fixed-navbar a:hover { color: #4CAF50; }
+        
+        /* 页面居中容器 */
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+      </style>
+    </head>
+    <body>
+      <div class="fixed-navbar">
+        <a href="index.html">首页</a><a href="product.html">产品</a><a href="contact.html">联系我们</a>
+      </div>
+      <div class="container">
+  
+      <a href="products.html">⬅ 返回产品列表</a>
+      <h1>游戏 (建造)</h1>
+      <img src="" style="max-width:100%; margin-bottom:20px;">
+      <div style="font-size:18px; line-height:1.6; margin-bottom:30px;">
+        
+      </div>
+      
+    </div></body></html>
