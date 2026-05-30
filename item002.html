@@ -4,40 +4,29 @@
     <head>
       <meta charset="UTF-8">
       <style>
-        /* 控制所有页面的背景和文字颜色 */
-        body { 
-          background-color: #ffffff; 
-          color: #000000; 
-          font-family: Arial, sans-serif;
-          margin: 0; 
-          padding-top: 60px; /* 给顶部的固定按钮栏留出 60px 空间，防止遮挡内容 */
-        }
-        
-        /* Fixed Button 栏的样式，永远固定在最上端 */
+        body { background-color: #1155cc; }
+        body { font-family: Arial, sans-serif; margin: 0; padding-top: 70px; }
         .fixed-navbar {
           position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          background-color: #222; /* 导航栏底色，你可以改 */
-          height: 50px;
+          top: 0; left: 0; width: 100%;
+          background-color: #1a1a1a; 
+          height: 55px;
           display: flex;
           align-items: center;
           justify-content: center;
           z-index: 9999;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
         .fixed-navbar a {
-          color: white;
+          color: #ffffff !important;
+          font-size: Sizepx !important;
           text-decoration: none;
           margin: 0 20px;
           font-weight: bold;
-          font-size: 16px;
+          transition: all 0.3s;
         }
-        .fixed-navbar a:hover { color: #4CAF50; }
-        
-        /* 页面居中容器 */
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .fixed-navbar a:hover { opacity: 0.7; }
+        .container { max-width: 950px; margin: 0 auto; padding: 20px; background: rgba(255,255,255,0.85); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
       </style>
     </head>
     <body>
@@ -46,10 +35,11 @@
       </div>
       <div class="container">
   
-      <a href="products.html">⬅ 返回产品列表</a>
-      <h1>网页 (产品风格)</h1>
-      <img src="" style="max-width:100%; margin-bottom:20px;">
-      <div style="font-size:18px; line-height:1.6; margin-bottom:30px;">
+      <p><a href="products.html" style="color:#555; text-decoration:none;">⬅ 返回产品列表</a></p>
+      <h1 style="color:#111; margin-top:20px;">网页</h1>
+      <p style="color:#666; font-style:italic;">类别风格：产品风格</p>
+      <img src="" style="max-width:100%; border-radius:6px; margin:20px 0; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+      <div style="font-size:16px; line-height:1.8; color:#333; margin-bottom:30px; background:#f9f9f9; padding:20px; border-radius:6px;">
         
       </div>
       
