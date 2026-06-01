@@ -3,71 +3,90 @@
     <html>
     <head>
       <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        
-      body::before {
-        content: "";
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background-image: url('https://lh3.googleusercontent.com/d/1xVPjU0Gjjjl3m857KievH1RlOqTsre2T');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        z-index: -1;
-        filter: none;
-        opacity: 1;
-      }
-      body { background-color: #ffffff; }
-    
-        body { font-family: Arial, sans-serif; margin: 0; padding-top: 85px; } /* 稍微加高顶部间距适应大字号 */
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-top: 85px; background-color: #f4f6f9; color: #333; }
         
         .fixed-navbar {
-          position: fixed;
-          top: 0; left: 0; width: 100%;
-          background-color: #00ff00; /* 由你 D8 涂的颜色决定 */
-          height: 65px; /* 加高导航栏适应 32px 大字 */
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+          position: fixed; top: 0; left: 0; width: 100%; background-color: #1a1a1a;
+          height: 65px; display: flex; align-items: center; justify-content: space-between;
+          padding: 0 50px; box-sizing: border-box; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        .nav-left, .nav-right { display: flex; align-items: center; }
+        .nav-left a { margin-right: 35px; }
+        .nav-right a { margin-left: 35px; }
         
-        .fixed-navbar a {
-          color: #fff2cc !important; /* 由你 C8 涂的颜色决定 */
-          font-size: 32px !important; /* 由你 B8 填的数字决定 */
-          text-decoration: none;
-          margin: 0 20px;
-          font-weight: bold;
-          transition: all 0.3s;
+        .fixed-navbar a { 
+          color: #ffffff !important; 
+          font-size: 16px !important; 
+          font-weight: bold !important;
+          text-decoration: none; transition: opacity 0.2s; 
         }
-        .fixed-navbar a:hover { opacity: 0.7; }
-        .container { max-width: 950px; margin: 0 auto; padding: 20px; background: rgba(255,255,255,0.85); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        .fixed-navbar a:hover { opacity: 0.6; }
+        
+        .container { max-width: 1100px; margin: 0 auto 50px auto; padding: 40px; background: #ffffff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        
+        /* 左右流式分栏 CSS */
+        .flex-row-layout { display: flex; flex-direction: row; align-items: flex-start; gap: 40px; margin-bottom: 50px; }
+        .flex-media-col { flex: 1.2; text-align: center; }
+        .flex-text-col { flex: 1; }
+        
+        /* 轮播与多媒体 CSS */
+        .carousel-container { position: relative; width: 100%; overflow: hidden; margin-bottom: 40px; }
+        .carousel-slide { display: none; width: 100%; height: 100%; object-fit: cover; animation: fadeEffect 0.8s; }
+        .carousel-active { display: block; }
+        @keyframes fadeEffect { from {opacity: 0.4} to {opacity: 1} }
+        
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; margin-top: 15px; }
+        .media-grid img { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border: 2px solid transparent; transition: all 0.2s; }
+        .media-grid img.thumb-active { border-color: #333; transform: scale(1.05); }
+        
+        @media (max-width: 768px) {
+          .flex-row-layout { flex-direction: column; }
+        }
       </style>
     </head>
     <body>
       <div class="fixed-navbar">
-        <a href="index.html">首页</a><a href="products.html">产品</a><a href="contact.html">联系我们</a>
+        <div class="nav-left"><a href="index.html">首页</a><a href="products.html">产品</a><a href="contact.html">联系我们</a></div>
+        <div class="nav-right"><a href="#">中/EN</a></div>
       </div>
       <div class="container">
-  
-      <div style="margin-bottom:40px; padding-bottom:20px; border-bottom:1px solid #eee;">
-        <h2 style="color:#222; border-left: 5px solid #333; padding-left: 10px;">欢迎来到我的世界</h2>
-        <p style="line-height:1.6; color:#444;"></p>
+  <div class="carousel-container" id="homepage-carousel" style="height: 400px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);"><img src="https://lh3.googleusercontent.com/d/1W0jwIsEN1FEyY2Sib9qkxWONlTMn32RC" class="carousel-slide carousel-active" style="border-radius: 10px;"></div>
+      <div class="flex-row-layout">
+        
+        <div class="flex-text-col">
+          <h2 style="font-size:28px; font-weight:600; color:#0000ff; margin-top:0;">你想要拥有自己的网页吗？</h2>
+          <p style="font-size:16px; font-weight:Normal; color:#ffffff; line-height:1.8;">在这里你可以选择你想要的风格，我们可以帮你完成所有步骤。</p>
+        </div>
       </div>
     
-      <div style="margin-bottom:40px; padding-bottom:20px; border-bottom:1px solid #eee;">
-        <h2 style="color:#222; border-left: 5px solid #333; padding-left: 10px;">你想要拥有自己的网页吗？</h2>
-        <p style="line-height:1.6; color:#444;">在这里你可以选择你想要的风格，我们可以帮你完成所有步骤。</p>
+      <div class="flex-row-layout">
+        
+        <div class="flex-text-col">
+          <h2 style="font-size:28px; font-weight:600; color:#0000ff; margin-top:0;">你想要拥有自己的视频吗？</h2>
+          <p style="font-size:16px; font-weight:Normal; color:#ffffff; line-height:1.8;">在这里我们可以为你提供你想要的视频，只要提供你的构想。</p>
+        </div>
       </div>
     
-      <div style="margin-bottom:40px; padding-bottom:20px; border-bottom:1px solid #eee;">
-        <h2 style="color:#222; border-left: 5px solid #333; padding-left: 10px;">你想要拥有自己的视频吗？</h2>
-        <p style="line-height:1.6; color:#444;">在这里我们可以为你提供你想要的视频，只要提供你的构想。</p>
+      <div class="flex-row-layout">
+        
+        <div class="flex-text-col">
+          <h2 style="font-size:28px; font-weight:600; color:#0000ff; margin-top:0;">你想要拥有自己的游戏吗？</h2>
+          <p style="font-size:16px; font-weight:Normal; color:#ffffff; line-height:1.8;">在这里我们可以为你设计出由你提供的构想而成的游戏。</p>
+        </div>
       </div>
     
-      <div style="margin-bottom:40px; padding-bottom:20px; border-bottom:1px solid #eee;">
-        <h2 style="color:#222; border-left: 5px solid #333; padding-left: 10px;">你想要拥有自己的游戏吗？</h2>
-        <p style="line-height:1.6; color:#444;">在这里我们可以为你设计出由你提供的构想而成的游戏。</p>
-      </div>
-    </div></body></html>
+    <script>
+      (function() {
+        var slides = document.querySelectorAll('#homepage-carousel .carousel-slide');
+        if (slides.length <= 1) return;
+        var currentIndex = 0;
+        setInterval(function() {
+          slides[currentIndex].classList.remove('carousel-active');
+          currentIndex = (currentIndex + 1) % slides.length;
+          slides[currentIndex].classList.add('carousel-active');
+        }, 3000);
+      })();
+    </script>
+  </div></body></html>
