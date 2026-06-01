@@ -6,40 +6,26 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
         
-      body::before {
-        content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background-image: url('https://lh3.googleusercontent.com/d/1z5OIt8p8fp90X2PfOa0lfBANp0AEb4ry'); background-size: cover; background-position: center; background-repeat: no-repeat;
-        z-index: -1; filter: none; opacity: 0.2;
-      }
+      body::before { content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://lh3.googleusercontent.com/d/1z5OIt8p8fp90X2PfOa0lfBANp0AEb4ry'); background-size: cover; background-position: center; background-repeat: no-repeat; z-index: -1; filter: none; opacity: 0.2; }
       body { background-color: #f4f6f9; }
     
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-top: 85px; color: #333; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-top: 65px; color: #333; }
         
-        .fixed-navbar {
-          position: fixed; top: 0; left: 0; width: 100%; background-color: #1a1a1a;
-          height: 65px; display: flex; align-items: center; justify-content: space-between;
-          padding: 0 50px; box-sizing: border-box; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+        .fixed-navbar { position: fixed; top: 0; left: 0; width: 100%; background-color: #1a1a1a; height: 65px; display: flex; align-items: center; justify-content: space-between; padding: 0 50px; box-sizing: border-box; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .nav-left, .nav-right { display: flex; align-items: center; }
-        .nav-left a { margin-right: 35px; }
-        .nav-right a { margin-left: 35px; }
-        
-        .fixed-navbar a { 
-          color: #ffffff !important; 
-          font-size: 16px !important; 
-          font-weight: bold !important;
-          text-decoration: none; transition: opacity 0.2s; 
-        }
+        .nav-left a { margin-right: 35px; } .nav-right a { margin-left: 35px; }
+        .fixed-navbar a { color: #ffffff !important; font-size: 16px !important; font-weight: bold !important; text-decoration: none; transition: opacity 0.2s; }
         .fixed-navbar a:hover { opacity: 0.6; }
         
-        /* ⭐️ 将容器设为 90% 半透明白，透出底层高级背景图 */
-        .container { max-width: 1100px; margin: 0 auto 50px auto; padding: 40px; background: rgba(255, 255, 255, 0.9); border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        /* 半透明白盒子 */
+        .container { max-width: 1100px; margin: 40px auto 50px auto; padding: 40px; background: rgba(255, 255, 255, 0.9); border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
         
         .flex-row-layout { display: flex; flex-direction: row; align-items: flex-start; gap: 40px; margin-bottom: 50px; }
         .flex-media-col { flex: 1.2; text-align: center; }
         .flex-text-col { flex: 1; }
         
-        .carousel-container { position: relative; width: 100%; overflow: hidden; margin-bottom: 40px; }
+        /* ⭐️ Banner 专用：不再有圆角和留白，绝对 100% 占满 */
+        .carousel-container { position: relative; width: 100%; overflow: hidden; margin-top: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         .carousel-slide { display: none; width: 100%; height: 100%; object-fit: cover; animation: fadeEffect 0.8s; }
         .carousel-active { display: block; }
         @keyframes fadeEffect { from {opacity: 0.4} to {opacity: 1} }
@@ -48,9 +34,7 @@
         .media-grid img { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border: 2px solid transparent; transition: all 0.2s; }
         .media-grid img.thumb-active { border-color: #333; transform: scale(1.05); }
         
-        @media (max-width: 768px) {
-          .flex-row-layout { flex-direction: column; }
-        }
+        @media (max-width: 768px) { .flex-row-layout { flex-direction: column; } }
       </style>
     </head>
     <body>
@@ -58,5 +42,4 @@
         <div class="nav-left"><a href="index.html">首页</a><a href="products.html">产品</a><a href="contact.html">联系我们</a></div>
         <div class="nav-right"><a href="#">中/EN</a></div>
       </div>
-      <div class="container">
-  <h2 style='font-size:32px; color:#111; margin-bottom:30px;'>联系我们</h2><div style='max-width:600px; margin-top:20px;'><div style='display:flex; padding:16px 0; border-bottom:1px solid #edf2f7; font-size:16px;'><div style='width:35%; font-weight:bold; color:#718096;'>Whatsapp</div><div style='width:5%; color:#a0aec0;'>:</div><div style='width:60%; color:#2d3748; font-weight:500;'>xxx-xxxxxx</div></div><div style='display:flex; padding:16px 0; border-bottom:1px solid #edf2f7; font-size:16px;'><div style='width:35%; font-weight:bold; color:#718096;'>意见反馈</div><div style='width:5%; color:#a0aec0;'></div><div style='width:60%; color:#2d3748; font-weight:500;'></div></div></div></div></body></html>
+      <div class="container"><h2 style='font-size:32px; color:#111; margin-bottom:30px;'>联系我们</h2><div style='max-width:600px; margin-top:20px;'><div style='display:flex; padding:16px 0; border-bottom:1px solid #edf2f7; font-size:16px;'><div style='width:35%; font-weight:bold; color:#718096;'>Whatsapp</div><div style='width:5%; color:#a0aec0;'>:</div><div style='width:60%; color:#2d3748; font-weight:500;'>xxx-xxxxxx</div></div><div style='display:flex; padding:16px 0; border-bottom:1px solid #edf2f7; font-size:16px;'><div style='width:35%; font-weight:bold; color:#718096;'>意见反馈</div><div style='width:5%; color:#a0aec0;'></div><div style='width:60%; color:#2d3748; font-weight:500;'></div></div></div></div></body></html>
