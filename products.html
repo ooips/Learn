@@ -5,7 +5,8 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-top: 85px; background-color: #f4f6f9; color: #333; }
+        body { background-color: #fce5cd; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-top: 85px; color: #333; }
         
         .fixed-navbar {
           position: fixed; top: 0; left: 0; width: 100%; background-color: #1a1a1a;
@@ -24,14 +25,13 @@
         }
         .fixed-navbar a:hover { opacity: 0.6; }
         
-        .container { max-width: 1100px; margin: 0 auto 50px auto; padding: 40px; background: #ffffff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        /* ⭐️ 将容器设为 90% 半透明白，透出底层高级背景图 */
+        .container { max-width: 1100px; margin: 0 auto 50px auto; padding: 40px; background: rgba(255, 255, 255, 0.9); border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
         
-        /* 左右流式分栏 CSS */
         .flex-row-layout { display: flex; flex-direction: row; align-items: flex-start; gap: 40px; margin-bottom: 50px; }
         .flex-media-col { flex: 1.2; text-align: center; }
         .flex-text-col { flex: 1; }
         
-        /* 轮播与多媒体 CSS */
         .carousel-container { position: relative; width: 100%; overflow: hidden; margin-bottom: 40px; }
         .carousel-slide { display: none; width: 100%; height: 100%; object-fit: cover; animation: fadeEffect 0.8s; }
         .carousel-active { display: block; }
@@ -60,132 +60,59 @@
       @media (max-width: 768px) { .category-row { flex-direction: column; gap: 20px; } .category-left { width: 100%; border-bottom: 2px solid #333; padding-bottom: 10px; } }
     </style>
     <div style="margin-bottom:40px;"></div>
-  
-      <div class="category-row">
-        <div class="category-left">
-          <h3 style="font-size:24px; font-weight:Normal; color:#434343; margin:0; position: sticky; top: 120px;">网页</h3>
-        </div>
-        <div class="category-right">
-    
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+  <div class="category-row"><div class="category-left"><h3 style="font-size:24px; font-weight:Normal; color:#434343; margin:0; position: sticky; top: 120px;">网页</h3></div><div class="category-right">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item002.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item002.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">产品风格</span> 
-              <span style="font-size:14px; color:#888;">(网页)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item002.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">产品风格</span> <span style="font-size:14px; color:#888;">(网页)</span></a></div>
         </div>
       
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item011.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item011.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">模仿</span> 
-              <span style="font-size:14px; color:#888;">(网页)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item011.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">模仿</span> <span style="font-size:14px; color:#888;">(网页)</span></a></div>
         </div>
       
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item003.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item003.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">商业风格</span> 
-              <span style="font-size:14px; color:#888;">(网页)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item003.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">商业风格</span> <span style="font-size:14px; color:#888;">(网页)</span></a></div>
         </div>
       
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item010.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item010.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">自定义</span> 
-              <span style="font-size:14px; color:#888;">(网页)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item010.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">自定义</span> <span style="font-size:14px; color:#888;">(网页)</span></a></div>
         </div>
       
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item001.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item001.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">blog风格</span> 
-              <span style="font-size:14px; color:#888;">(网页)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item001.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">blog风格</span> <span style="font-size:14px; color:#888;">(网页)</span></a></div>
         </div>
-      </div></div>
-      <div class="category-row">
-        <div class="category-left">
-          <h3 style="font-size:24px; font-weight:Normal; color:#434343; margin:0; position: sticky; top: 120px;">视频</h3>
-        </div>
-        <div class="category-right">
-    
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+      </div></div><div class="category-row"><div class="category-left"><h3 style="font-size:24px; font-weight:Normal; color:#434343; margin:0; position: sticky; top: 120px;">视频</h3></div><div class="category-right">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item006.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item006.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">回忆构思</span> 
-              <span style="font-size:14px; color:#888;">(视频)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item006.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">回忆构思</span> <span style="font-size:14px; color:#888;">(视频)</span></a></div>
         </div>
       
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item005.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item005.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">纪念视频</span> 
-              <span style="font-size:14px; color:#888;">(视频)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item005.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">纪念视频</span> <span style="font-size:14px; color:#888;">(视频)</span></a></div>
         </div>
       
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item004.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item004.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">自创构思</span> 
-              <span style="font-size:14px; color:#888;">(视频)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item004.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">自创构思</span> <span style="font-size:14px; color:#888;">(视频)</span></a></div>
         </div>
-      </div></div>
-      <div class="category-row">
-        <div class="category-left">
-          <h3 style="font-size:24px; font-weight:Normal; color:#434343; margin:0; position: sticky; top: 120px;">游戏</h3>
-        </div>
-        <div class="category-right">
-    
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+      </div></div><div class="category-row"><div class="category-left"><h3 style="font-size:24px; font-weight:Normal; color:#434343; margin:0; position: sticky; top: 120px;">游戏</h3></div><div class="category-right">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item009.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item009.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">建造</span> 
-              <span style="font-size:14px; color:#888;">(游戏)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item009.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">建造</span> <span style="font-size:14px; color:#888;">(游戏)</span></a></div>
         </div>
       
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item008.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item008.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">卡牌</span> 
-              <span style="font-size:14px; color:#888;">(游戏)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item008.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">卡牌</span> <span style="font-size:14px; color:#888;">(游戏)</span></a></div>
         </div>
       
-        <div style="background:#fff; border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
+        <div style="background:rgba(255,255,255,0.95); border:1px solid #eef2f5; border-radius:8px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.03); text-align:center; padding-bottom:15px; transition:transform 0.2s;">
           <a href="item007.html"><img src="" style="width:100%; height:180px; object-fit:cover; border-bottom:1px solid #eee;"></a>
-          <div style="padding: 15px 10px 5px 10px;">
-            <a href="item007.html" style="text-decoration:none;">
-              <span style="color:#434343; font-size:18px; font-weight:Normal;">冒险</span> 
-              <span style="font-size:14px; color:#888;">(游戏)</span>
-            </a>
-          </div>
+          <div style="padding: 15px 10px 5px 10px;"><a href="item007.html" style="text-decoration:none;"><span style="color:#434343; font-size:18px; font-weight:Normal;">冒险</span> <span style="font-size:14px; color:#888;">(游戏)</span></a></div>
         </div>
       </div></div></div></div></body></html>
