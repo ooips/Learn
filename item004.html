@@ -3,46 +3,84 @@
     <html>
     <head>
       <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        body { background-color: #fce5cd; }
-        body { font-family: Arial, sans-serif; margin: 0; padding-top: 85px; } /* 稍微加高顶部间距适应大字号 */
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-top: 85px; background-color: #f4f6f9; color: #333; }
         
         .fixed-navbar {
-          position: fixed;
-          top: 0; left: 0; width: 100%;
-          background-color: #00ff00; /* 由你 D8 涂的颜色决定 */
-          height: 65px; /* 加高导航栏适应 32px 大字 */
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 9999;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+          position: fixed; top: 0; left: 0; width: 100%; background-color: #1a1a1a;
+          height: 65px; display: flex; align-items: center; justify-content: space-between;
+          padding: 0 50px; box-sizing: border-box; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        .nav-left, .nav-right { display: flex; align-items: center; }
+        .nav-left a { margin-right: 35px; }
+        .nav-right a { margin-left: 35px; }
         
-        .fixed-navbar a {
-          color: #fff2cc !important; /* 由你 C8 涂的颜色决定 */
-          font-size: 32px !important; /* 由你 B8 填的数字决定 */
-          text-decoration: none;
-          margin: 0 20px;
-          font-weight: bold;
-          transition: all 0.3s;
+        .fixed-navbar a { 
+          color: #ffffff !important; 
+          font-size: 16px !important; 
+          font-weight: bold !important;
+          text-decoration: none; transition: opacity 0.2s; 
         }
-        .fixed-navbar a:hover { opacity: 0.7; }
-        .container { max-width: 950px; margin: 0 auto; padding: 20px; background: rgba(255,255,255,0.85); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        .fixed-navbar a:hover { opacity: 0.6; }
+        
+        .container { max-width: 1100px; margin: 0 auto 50px auto; padding: 40px; background: #ffffff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        
+        /* 左右流式分栏 CSS */
+        .flex-row-layout { display: flex; flex-direction: row; align-items: flex-start; gap: 40px; margin-bottom: 50px; }
+        .flex-media-col { flex: 1.2; text-align: center; }
+        .flex-text-col { flex: 1; }
+        
+        /* 轮播与多媒体 CSS */
+        .carousel-container { position: relative; width: 100%; overflow: hidden; margin-bottom: 40px; }
+        .carousel-slide { display: none; width: 100%; height: 100%; object-fit: cover; animation: fadeEffect 0.8s; }
+        .carousel-active { display: block; }
+        @keyframes fadeEffect { from {opacity: 0.4} to {opacity: 1} }
+        
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; margin-top: 15px; }
+        .media-grid img { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); border: 2px solid transparent; transition: all 0.2s; }
+        .media-grid img.thumb-active { border-color: #333; transform: scale(1.05); }
+        
+        @media (max-width: 768px) {
+          .flex-row-layout { flex-direction: column; }
+        }
       </style>
     </head>
     <body>
       <div class="fixed-navbar">
-        <a href="index.html">首页</a><a href="products.html">产品</a><a href="contact.html">联系我们</a>
+        <div class="nav-left"><a href="index.html">首页</a><a href="products.html">产品</a><a href="contact.html">联系我们</a></div>
+        <div class="nav-right"><a href="#">中/EN</a></div>
       </div>
       <div class="container">
   
-      <p><a href="products.html" style="color:#555; text-decoration:none;">⬅ 返回产品列表</a></p>
-      <h1 style="color:#111; margin-top:20px;">视频</h1>
-      <p style="color:#666; font-style:italic;">类别风格：自创构思</p>
-      <img src="" style="max-width:100%; border-radius:6px; margin:20px 0; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
-      <div style="font-size:16px; line-height:1.8; color:#333; margin-bottom:30px; background:#f9f9f9; padding:20px; border-radius:6px;">
+        <p style="margin-bottom:30px;"><a href="products.html" style="color:#666; text-decoration:none; font-weight:bold;">⬅ 返回产品列表</a></p>
+        <div class="flex-row-layout">
+          <div class="flex-media-col">
+            <img id="main-view-item004" src="" style="width:100%; height:400px; object-fit:cover; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.1); transition: all 0.3s;">
+            
+          </div>
+          <div class="flex-text-col">
+            <span style="background:#333; color:#fff; padding:4px 10px; font-size:12px; border-radius:4px; font-weight:bold;">自创构思</span>
+            <h1 style="font-size:36px; color:#111; margin:15px 0;">视频 详情介绍</h1>
+            <p style="font-size:16px; line-height:1.8; color:#444; background:#f8f9fa; padding:20px; border-radius:6px; border-left:4px solid #ddd;">你给我故事，我帮你转换成视频</p>
+          </div>
+        </div>
         
-      </div>
-      
-    </div></body></html>
+        
+        <script>
+          (function() {
+            var mainImg = document.getElementById('main-view-item004');
+            var thumbs = document.querySelectorAll('.thumb-item004');
+            if (thumbs.length <= 1) return;
+            var currentIndex = 0; var intervalTime = 2000; 
+            function switchImage(index) {
+              thumbs[currentIndex].classList.remove('thumb-active');
+              currentIndex = index;
+              thumbs[currentIndex].classList.add('thumb-active');
+              mainImg.src = thumbs[currentIndex].src;
+            }
+            thumbs.forEach(function(thumb, idx) { thumb.addEventListener('click', function() { switchImage(idx); }); });
+            if (intervalTime > 0) { setInterval(function() { switchImage((currentIndex + 1) % thumbs.length); }, intervalTime); }
+          })();
+        </script>
+      </div></body></html>
