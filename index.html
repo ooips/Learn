@@ -59,13 +59,16 @@
         function parseMediaUrl(url) {
             if (!url || url === "No Data") return "";
             if (url.toLowerCase() === "x") return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23eee'/></svg>";
+            
             if (url.indexOf("drive.google.com") > -1) {
-          // 遇到 Google Drive 链接时，精准提取出中间的 33 位文件 ID
-          var match = url.match(//d/(.+?)//);
-          if (match && match[1]) {
-          // 🌟 终极修复：使用 HTTPS 协议，且换成 Google 官方支持 GIF 的原画质导出接口！
-           return "https://drive.google.com/uc?export=view&id=" + match[1];
-              }
+                // 遇到 Google Drive 链接时，精准提取出中间的 33 位文件 ID
+                // 注意这里的斜杠转义：\/ 代表匹配真实的 /
+                var match = url.match(/\/d\/(.+?)\//);
+                
+                if (match && match[1]) {
+                    // 🌟 终极修复：使用 HTTPS 协议，且换成 Google 官方支持 GIF 的原画质导出接口！
+                    return "https://drive.google.com/uc?export=view&id=" + match[1];
+                }
             }
             return url;
         }
