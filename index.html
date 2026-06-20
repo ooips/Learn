@@ -5,18 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic SPA Website</title>
     <style>
-        /* CSS Reset & 基礎樣式 */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f8f9fa; overflow-x: hidden; }
-        
         #navigation-bar { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; display: flex; align-items: center; }
         #page-content { margin-top: 65px; min-height: calc(100vh - 65px); }
-        
         .flex-row { display: flex; flex-direction: row; align-items: center; }
         .flex-column { display: flex; flex-direction: column; }
         .flex-row-wrap { display: flex; flex-flow: row wrap; }
         .center-layout { margin: 0 auto; display: flex; justify-content: center; }
-        
         input, textarea { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
         button { cursor: pointer; border: none; padding: 10px 20px; font-weight: bold; }
     </style>
@@ -24,7 +20,6 @@
 <body>
 
     <div id="navigation-bar"></div>
-
     <div id="page-content"></div>
 
     <script id="site-data" type="application/json">
@@ -32,11 +27,9 @@
     </script>
 
     <script>
-        // === 1. 掛載 Google Sheets 數據 ===
         var DB = JSON.parse(document.getElementById('site-data').textContent);
         var WEB_APP_URL = "YOUR_WEB_APP_URL_HERE";
 
-        // === 2. 突破網盤攔截 ===
         function parseMediaUrl(url) {
             if (!url || url === "No Data") return "";
             if (url.toLowerCase() === "x") return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23eee'/></svg>";
@@ -47,17 +40,19 @@
             return url;
         }
 
-        // === 3. 樣式繼承處理器 ===
         function getStyleRules(sectionName) {
             var styleObj = DB.Global.find(function(s) { return s.Section === sectionName; });
-            if (!styleObj && sectionName.endsWith(" Item")) {
-                var parentName = sectionName.replace(" Item", "");
-                styleObj = DB.Global.find(function(s) { return s.Section === parentName; });
+            if (!styleObj) {
+                if (sectionName.endsWith(" Item")) {
+                    var parentName = sectionName.replace(" Item", "");
+                    styleObj = DB.Global.find(function(s) { return s.Section === parentName; });
+                } else if (sectionName.startsWith("About Row")) {
+                    styleObj = DB.Global.find(function(s) { return s.Section === "About Row"; });
+                }
             }
             return styleObj || {};
         }
 
-        // === 4. 生成行內 CSS 樣式 (🌟改用安全的字串拼接，徹底根治 width 錯誤) ===
         function generateInlineCSS(rules) {
             if (!rules) return "";
             var css = "";
@@ -68,7 +63,6 @@
             if (rules['Border Radius'] && rules['Border Radius'] !== "No Data") css += "border-radius: " + rules['Border Radius'] + ";";
             if (rules['Text Color'] && rules['Text Color'] !== "No Data") css += "color: " + rules['Text Color'] + ";";
             if (rules['PC Font Size'] && rules['PC Font Size'] !== "No Data") css += "font-size: " + rules['PC Font Size'] + "px;";
-            if (rules['Font Weight'] && rules['Font Weight'] !== "No Data") css += "font-weight: " + rules['Font Weight'].toLowerCase() + ";";
             
             var bg = rules['Bg Color/Pic'];
             if (bg && bg !== "No Data") {
@@ -81,46 +75,72 @@
             return css;
         }
 
-        // === 5. 哈希路由引擎 ===
+        // 🌟 哈希路由核心引擎
         function renderPage() {
             var hash = window.location.hash.substring(1) || "index.html";
             var contentDiv = document.getElementById("page-content");
             contentDiv.innerHTML = ""; 
 
             if (hash === "index.html") {
-                document.title = "首頁";
+                document.title = "首页";
                 DB.Main.forEach(function(row) {
                     var rules = getStyleRules(row.Section);
-                    var classNames = rules['PC Alignment'] === "flex-column" ? "flex-column" : "flex-row";
-                    if (rules['Layout Position'] === "center") classNames += " center-layout";
+                    var css = generateInlineCSS(rules);
+                    var align = rules['PC Alignment'] || '';
                     
-                    var htmlBlock = '<div style="' + generateInlineCSS(rules) + '" class="' + classNames + '">' +
-                        '<div style="flex: 1; padding: 20px;">' +
-                            '<h2 style="margin-bottom: 15px;">' + (row.Title !== "No Data" ? row.Title : "") + '</h2>' +
-                            '<p style="line-height: 1.6;">' + (row.Content !== "No Data" ? row.Content : "") + '</p>' +
-                        '</div>';
-                    if (row.Media !== "No Data") {
-                        htmlBlock += '<div style="flex: 1; display:flex; justify-content:center;"><img src="' + parseMediaUrl(row.Media) + '" style="max-width:100%; border-radius: 8px;"></div>';
+                    var classNames = "flex-row-wrap"; 
+                    if (align.includes("flex-column")) classNames = "flex-column";
+                    if (rules['Layout Position'] === "center" || align.includes("center")) classNames += " center-layout";
+                    
+                    var htmlBlock = '<div style="' + css + '" class="' + classNames + '">';
+
+                    if (row.Section === "Hero") {
+                        if (row.Media !== "No Data") {
+                            htmlBlock += '<img src="' + parseMediaUrl(row.Media) + '" style="width:100%; height:100%; object-fit:cover;">';
+                        }
+                    } else {
+                        var textBlock = '';
+                        if (row.Title !== "No Data" || row.Content !== "No Data") {
+                             textBlock = '<div style="flex:1; padding:20px; min-width:300px;">' +
+                                         '<h2 style="margin-bottom:15px;">' + (row.Title !== "No Data" ? row.Title : "") + '</h2>' +
+                                         '<p style="line-height:1.6;">' + (row.Content !== "No Data" ? row.Content : "") + '</p>' +
+                                         '</div>';
+                        }
+                        var mediaBlock = '';
+                        if (row.Media !== "No Data") {
+                             mediaBlock = '<div style="flex:1; display:flex; justify-content:center; padding:20px; min-width:300px;">' +
+                                          '<img src="' + parseMediaUrl(row.Media) + '" style="max-width:100%; border-radius:8px;">' +
+                                          '</div>';
+                        }
+                        if (align === "flex-reverse" || align === "right") {
+                            htmlBlock += mediaBlock + textBlock;
+                        } else {
+                            htmlBlock += textBlock + mediaBlock;
+                        }
                     }
                     htmlBlock += '</div>';
                     contentDiv.innerHTML += htmlBlock;
                 });
+                
             } else if (hash === "products.html") {
-                document.title = "產品展示";
+                document.title = "产品展示";
                 contentDiv.innerHTML = '<div class="center-layout flex-column" style="padding: 100px; text-align: center;">' +
-                    '<h2>🚧 產品畫廊模組已接通</h2>' +
-                    '<p style="margin-top: 20px;">即將開始組裝左側選單與右側動態篩選卡片...</p>' +
+                    '<h2>🚧 产品画廊页底层框架已生成</h2>' +
+                    '<p style="margin-top: 20px;">完美的 SPA 架构已接管，接下来可以专心组装筛选器逻辑了...</p>' +
                 '</div>';
+                
             } else if (hash === "contact.html") {
-                document.title = "聯絡我們";
-                var contactHTML = '<div class="center-layout flex-column" style="width: 100%; align-items: center; padding-top: 50px;">';
+                document.title = "联系我们";
+                var contactHTML = '<div class="center-layout flex-column" style="width:100%; align-items:center; padding-top:50px;">';
                 DB.Contact.forEach(function(row) {
                     var rules = getStyleRules(row.Section);
+                    var css = generateInlineCSS(rules);
+                    
                     if (row.Section === "Feedback Form") {
                         if (row.Button === "Submit") {
-                            contactHTML += '<button onclick="submitForm()" style="background-color: #4285f4; color: white; width:100%; margin-top:20px;">Submit</button>';
+                            contactHTML += '<button onclick="submitForm()" style="background-color:#4285f4; color:white; width:100%; margin-top:20px;">Submit</button>';
                         } else if (row.Media !== "No Data") {
-                            contactHTML += '<div style="width: 100%; text-align: left; margin-bottom: 10px;">' +
+                            contactHTML += '<div style="width:100%; text-align:left; margin-bottom:10px;">' +
                                 '<label style="display:block; font-weight:bold; margin-bottom:5px;">' + row.Title + '</label>' +
                                 (row.Media === 'textarea' ? 
                                     '<textarea id="' + row.Title + '" placeholder="' + row.Content + '" rows="4"></textarea>' : 
@@ -128,12 +148,12 @@
                             '</div>';
                         }
                     } else if (row.Section === "Contact Item") {
-                        contactHTML += '<div class="flex-row" style="width: 100%; margin-bottom: 10px;">' +
-                            '<div style="width: 120px; text-align: left; font-weight: bold;">' + row.Title + '</div>' +
-                            '<div style="text-align: left;">' + (row.Content !== "No Data" ? row.Content : "") + '</div>' +
+                        contactHTML += '<div class="flex-row" style="' + css + ' width:100%; margin-bottom:10px;">' +
+                            '<div style="width:120px; text-align:left; font-weight:bold;">' + row.Title + '</div>' +
+                            '<div style="text-align:left;">' + (row.Content !== "No Data" ? row.Content : "") + '</div>' +
                         '</div>';
                     } else {
-                        contactHTML += '<h1 style="margin-bottom: 20px;">' + row.Title + '</h1>';
+                        contactHTML += '<div style="' + css + '"><h1 style="margin-bottom:20px;">' + row.Title + '</h1></div>';
                     }
                 });
                 contactHTML += '</div>';
@@ -141,28 +161,22 @@
             }
         }
 
-        // === 6. 表單提交 ===
         function submitForm() {
             var payload = {
                 Name: document.getElementById("Name") ? document.getElementById("Name").value : "",
                 Email: document.getElementById("Email") ? document.getElementById("Email").value : "",
                 Description: document.getElementById("Description") ? document.getElementById("Description").value : ""
             };
-
-            fetch(WEB_APP_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            }).then(function(res) { return res.json(); }).then(function(data) {
+            fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) })
+            .then(function(res) { return res.json(); }).then(function(data) {
                 if (data.status === 'success') {
-                    alert("提交成功！我們會在 24 小時內回復您。");
-                    location.reload();
+                    alert("提交成功！"); location.reload();
                 } else {
-                    alert("提交異常，請稍后再試。");
+                    alert("提交异常，请稍后再试。");
                 }
             }).catch(function(e) { console.error(e); });
         }
 
-        // === 7. 渲染常駐導航欄 ===
         function initNavigation() {
             var navDiv = document.getElementById("navigation-bar");
             var navRules = getStyleRules("Navigation");
@@ -172,15 +186,17 @@
             var rightMenu = '<div class="flex-row">';
 
             DB.Navigation.forEach(function(row) {
-                var link = '<a href="#' + row.Link + '" style="text-decoration:none; color: inherit; margin: 0 15px; font-weight:bold;">' + row.Title + '</a>';
+                // 🌟 SPA 专属：把 # 号加回来了！配合单页面路由使用。
+                var link = '<a href="#' + row.Link + '" style="text-decoration:none; color:inherit; margin:0 15px; font-weight:bold;">' + row.Title + '</a>';
                 if (row.Section === "Navigation Item") leftMenu += link;
                 if (row.Section === "Navigation Right") rightMenu += link;
             });
-            
             navDiv.innerHTML = leftMenu + "</div>" + rightMenu + "</div>";
         }
 
+        // 🌟 SPA 专属：监听哈希值变化，实现无刷新跳转
         window.addEventListener('hashchange', renderPage);
+        
         window.onload = function() {
             initNavigation();
             renderPage(); 
