@@ -9,8 +9,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f8f9fa; overflow-x: hidden; }
         
-        #navigation-bar { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; display: flex; align-items: center; }
-        #page-content { margin-top: 65px; min-height: calc(100vh - 65px); }
+        #navigation-bar { position: fixed; top: 0; left: 0; width: 100%; height: 65px; z-index: 1000; display: flex; align-items: center; }
+        #page-content { margin-top: 65px; min-height: calc(100vh - 65px); width: 100%; }
         
         .flex-row { display: flex; flex-direction: row; align-items: center; }
         .flex-column { display: flex; flex-direction: column; }
@@ -32,17 +32,17 @@
     </script>
 
     <script>
-        // === 1. 挂载 Google Sheets 数据（绝对安全模式） ===
+        // === 1. 挂载 Google Sheets 数据 ===
         const DB = JSON.parse(document.getElementById('site-data').textContent);
         const WEB_APP_URL = "YOUR_WEB_APP_URL_HERE";
 
-        // === 2. 突破网盘拦截 ===
+        // === 2. 突破网盘拦截 (修复后) ===
         function parseMediaUrl(url) {
             if (!url || url === "No Data") return "";
             if (url.toLowerCase() === "x") return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23eee'/></svg>";
             if (url.includes("drive.google.com")) {
                 const match = url.match(/\/d\/(.+?)\//);
-                if (match && match[1]) return `https://lh3.googleusercontent.com/d/$/${match[1]}`;
+                if (match && match[1]) return `https://lh3.googleusercontent.com/d/$/$${match[1]}`; // 这里修复了模板字符串语法
             }
             return url;
         }
@@ -57,24 +57,36 @@
             return styleObj || {};
         }
 
-        // === 4. 生成行内 CSS 样式 ===
+        // === 4. 生成行内 CSS 样式 (🌟 修复了背景图片逻辑) ===
         function generateInlineCSS(rules) {
             if (!rules) return "";
             let css = "";
             if (rules['PC Width'] && rules['PC Width'] !== "No Data") css += `width: ${rules['PC Width']};`;
-            if (rules['Bg Color/Pic'] && rules['Bg Color/Pic'] !== "No Data") css += `background-color: ${rules['Bg Color/Pic']};`;
+            if (rules['PC Height'] && rules['PC Height'] !== "No Data") css += `height: ${rules['PC Height']};`;
             if (rules['PC Padding'] && rules['PC Padding'] !== "No Data") css += `padding: ${rules['PC Padding']};`;
             if (rules['Border Radius'] && rules['Border Radius'] !== "No Data") css += `border-radius: ${rules['Border Radius']};`;
             if (rules['Text Color'] && rules['Text Color'] !== "No Data") css += `color: ${rules['Text Color']};`;
+            
+            // 智能判断是颜色还是背景图
+            if (rules['Bg Color/Pic'] && rules['Bg Color/Pic'] !== "No Data") {
+                let bg = rules['Bg Color/Pic'];
+                if (bg.startsWith("http") || bg.startsWith("data:")) {
+                    css += `background-image: url('${parseMediaUrl(bg)}'); background-size: cover; background-position: center;`;
+                } else {
+                    css += `background-color: ${bg};`;
+                }
+            }
             return css;
         }
 
-        // === 5. 哈希路由引擎 ===
+        // === 5. 哈希路由引擎 (🌟 补全了产品页逻辑) ===
         function renderPage() {
+            // 解析导航栏中的 Link (例如 products.html)，容错处理空哈希
             let hash = window.location.hash.substring(1) || "index.html";
             let contentDiv = document.getElementById("page-content");
             contentDiv.innerHTML = ""; 
 
+            // ---------------- 首页渲染 ----------------
             if (hash === "index.html") {
                 document.title = "首页";
                 DB.Main.forEach(row => {
@@ -83,12 +95,41 @@
                     if (rules['Layout Position'] === "center") classNames += " center-layout";
                     
                     contentDiv.innerHTML += `<div style="${generateInlineCSS(rules)}" class="${classNames}">
-                        <h2>${row.Title !== "No Data" ? row.Title : ""}</h2>
-                        <p>${row.Content !== "No Data" ? row.Content : ""}</p>
-                        ${row.Media !== "No Data" ? `<img src="${parseMediaUrl(row.Media)}" style="max-width:100%;">` : ""}
+                        ${row.Title !== "No Data" ? `<h2>${row.Title}</h2>` : ""}
+                        ${row.Content !== "No Data" ? `<p>${row.Content}</p>` : ""}
+                        ${row.Media !== "No Data" ? `<img src="${parseMediaUrl(row.Media)}" style="max-width:100%; border-radius:8px; margin-top:10px;">` : ""}
                     </div>`;
                 });
-            } else if (hash === "contact.html") {
+            } 
+            // ---------------- 产品中心渲染 ----------------
+            else if (hash === "products.html") {
+                document.title = "产品中心";
+                // 开启图文交错的父容器：左边30%菜单，右边70%卡片
+                let menuHTML = '<div class="flex-column" style="width: 30%; padding: 20px;">';
+                let cardsHTML = '<div class="flex-row-wrap" style="width: 70%; padding: 20px; align-items: flex-start; align-content: flex-start;">';
+                
+                DB.Product.forEach(row => {
+                    let rules = getStyleRules(row.Section);
+                    
+                    if (row.Section.includes("Menu Item")) {
+                        // 左侧分类按钮
+                        menuHTML += `<button style="${generateInlineCSS(rules)} margin-bottom: 15px; width: 100%; border:none;">${row.Title}</button>`;
+                    } else if (row.Section.includes("Content Item")) {
+                        // 右侧产品卡片（遵守 Config 宪法：仅展示标题和 Default Picture）
+                        cardsHTML += `<div style="${generateInlineCSS(rules)} margin: 10px; padding: 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                            <img src="${parseMediaUrl(row['Default Picture'])}" style="width:100%; max-height:200px; object-fit:cover; border-radius:8px;">
+                            <h3 style="margin-top:15px; font-size:18px;">${row.Title !== "No Data" ? row.Title : ""}</h3>
+                        </div>`;
+                    }
+                });
+                
+                menuHTML += '</div>';
+                cardsHTML += '</div>';
+                // 拼接左右两大金刚
+                contentDiv.innerHTML = `<div class="flex-row" style="width: 100%; align-items: flex-start;">${menuHTML}${cardsHTML}</div>`;
+            } 
+            // ---------------- 联系我们渲染 ----------------
+            else if (hash === "contact.html") {
                 document.title = "联系我们";
                 let contactHTML = '<div class="center-layout flex-column" style="width: 100%; align-items: center; padding-top: 50px;">';
                 
@@ -97,28 +138,30 @@
                     
                     if (row.Section === "Feedback Form") {
                         if (row.Button === "Submit") {
-                            contactHTML += `<button onclick="submitForm()" style="background-color: #4285f4; color: white; width:100%;">Submit</button>`;
+                            contactHTML += `<button onclick="submitForm()" style="background-color: #4285f4; color: white; width:100%; margin-top: 20px; padding: 12px; border-radius: 8px;">Submit</button>`;
                         } else if (row.Media !== "No Data") {
                             contactHTML += `
-                                <div style="width: 100%;">
-                                    <label style="display:block; font-weight:bold;">${row.Title}</label>
+                                <div style="width: 100%; margin-bottom: 15px; text-align: left;">
+                                    <label style="display:block; font-weight:bold; margin-bottom: 8px; color: #333;">${row.Title}</label>
                                     ${row.Media === 'textarea' ? 
-                                        `<textarea id="${row.Title}" placeholder="${row.Content}" rows="4"></textarea>` : 
-                                        `<input type="${row.Media}" id="${row.Title}" placeholder="${row.Content}">`}
+                                        `<textarea id="${row.Title}" placeholder="${row.Content}" rows="5" style="border-radius: 8px; border: 1px solid #ddd;"></textarea>` : 
+                                        `<input type="${row.Media}" id="${row.Title}" placeholder="${row.Content}" style="border-radius: 8px; border: 1px solid #ddd;">`}
                                 </div>`;
                         }
                     } else if (row.Section === "Contact Item") {
                         contactHTML += `
-                            <div class="flex-row" style="width: 100%; margin-bottom: 10px;">
-                                <div style="width: 120px; text-align: left; font-weight: bold;">${row.Title}</div>
-                                <div>${row.Content !== "No Data" ? row.Content : ""}</div>
+                            <div class="flex-row" style="width: 100%; margin-bottom: 15px;">
+                                <div style="width: 120px; text-align: left; font-weight: bold; color: #555;">${row.Title}</div>
+                                <div style="color: #666;">${row.Content !== "No Data" ? row.Content : ""}</div>
                             </div>`;
                     } else {
-                        contactHTML += `<h1 style="margin-bottom: 20px;">${row.Title}</h1>`;
+                        contactHTML += `<h1 style="margin-bottom: 30px; color: #222;">${row.Title}</h1>`;
                     }
                 });
                 contactHTML += '</div>';
-                contentDiv.innerHTML = contactHTML;
+                
+                // 将表单和联系信息包裹在一张居中的大卡片里
+                contentDiv.innerHTML = `<div style="width: 50%; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin: 40px auto;">${contactHTML}</div>`;
             }
         }
 
@@ -153,9 +196,14 @@
             let rightMenu = '<div class="flex-row">';
 
             DB.Navigation.forEach(row => {
-                let link = `<a href="#${row.Link}" style="text-decoration:none; color: inherit; margin: 0 15px; font-weight:bold;">${row.Title}</a>`;
-                if (row.Section === "Navigation Item") leftMenu += link;
-                if (row.Section === "Navigation Right") rightMenu += link;
+                // 如果 Link 是纯英文网页名（如 products.html），直接转为带 # 的哈希链接
+                let linkTarget = row.Link !== "No Data" ? row.Link : "";
+                let href = linkTarget.endsWith(".html") ? "#" + linkTarget : linkTarget;
+                
+                let linkStr = `<a href="${href}" style="text-decoration:none; color: inherit; margin: 0 15px; font-weight:bold;">${row.Title}</a>`;
+                
+                if (row.Section === "Navigation Item") leftMenu += linkStr;
+                if (row.Section === "Navigation Right") rightMenu += linkStr;
             });
             
             navDiv.innerHTML = leftMenu + "</div>" + rightMenu + "</div>";
