@@ -57,9 +57,9 @@
             if (url.toLowerCase() === "x") return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23eee'/></svg>";
             if (url.indexOf("drive.google.com") > -1) {
                 try {
+                    // 最稳妥的字符串切割法，绝不报错
                     var id = url.split("/d/")[1].split("/")[0];
-                    // 彻底解决动图变静图、HTTPS 混合内容拦截问题
-                    return "https://drive.google.com/uc?export=view&id=" + id;
+                    return "https://lh3.googleusercontent.com/d/" + id;
                 } catch(e) { return url; }
             }
             return url;
