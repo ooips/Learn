@@ -196,9 +196,12 @@
             let rightMenu = '<div class="flex-row">';
 
             DB.Navigation.forEach(row => {
-                // 如果 Link 是纯英文网页名（如 products.html），直接转为带 # 的哈希链接
-                let linkTarget = row.Link !== "No Data" ? row.Link : "";
+                // 🌟 【防弹修复区】：强制把抓取到的东西变成字符串，如果是 undefined 就变成空字串 ""，绝对不让引擎崩溃！
+                let linkTarget = (row.Link && row.Link !== "No Data") ? String(row.Link) : "";
                 let href = linkTarget.endsWith(".html") ? "#" + linkTarget : linkTarget;
+                
+                // 同样给 Title 也加个防弹保护
+                let titleText = (row.Title && row.Title !== "No Data") ? row.Title : "";
                 
                 let linkStr = `<a href="${href}" style="text-decoration:none; color: inherit; margin: 0 15px; font-weight:bold;">${row.Title}</a>`;
                 
