@@ -3,364 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyWorld</title>
+    <title>Generic Core SPA</title>
     <style>
-        /* 基础底层物理规律 */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f8f9fa; overflow-x: hidden; scroll-behavior: smooth; }
+        /* 系统底层物理样式（防挤压全局盒模型） */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; color: #333; line-height: 1.6; }
+        #nav-bar { position: sticky; top: 0; z-index: 1000; height: 60px; background: #1a1a1a; padding: 0 20px; display: flex; align-items: center; overflow-x: auto; white-space: nowrap; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        #nav-bar a { color: #fff; text-decoration: none; margin-right: 25px; font-weight: 500; font-size: 15px; transition: color 0.2s; }
+        #nav-bar a:hover, #nav-bar a.active { color: #4dabf7; }
+        #main-view { padding: 30px 20px; max-width: 1200px; margin: 0 auto; min-height: calc(100vh - 60px); }
         
-        #page-content { margin-top: 65px; min-height: calc(100vh - 65px); width: 100%; }
-        
-        /* 弹性布局容器基础（允许换行防挤压） */
-        .flex-container { display: flex; flex-wrap: wrap; width: 100%; }
-        .flex-row { flex-direction: row; align-items: center; }
-        .flex-row-reverse { flex-direction: row-reverse; align-items: center; }
-        .flex-column { flex-direction: column; }
-        .flex-column-reverse { flex-direction: column-reverse; }
-        .justify-center { justify-content: center; text-align: center; margin: 0 auto; }
-        
-        /* 组件交互特效 */
-        .filter-menu-item { cursor: pointer; padding: 10px 15px; margin-bottom: 5px; font-weight: bold; border-radius: 4px; transition: 0.3s; }
-        .filter-menu-item:hover, .filter-menu-item.active { background-color: #e0e0e0; }
-        .product-card { cursor: pointer; transition: transform 0.3s; }
-        .product-card:hover { transform: translateY(-5px); }
-        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center; }
-        .modal-content { background:#fff; padding:20px; border-radius:8px; max-width:800px; width:90%; max-height:90vh; overflow-y:auto; position:relative; }
-        .close-btn { position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer; font-weight:bold; }
-        input, textarea { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
-        button { cursor: pointer; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; }
+        /* 通用卡片样式 */
+        .generic-card { background: #fff; border-radius: 8px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #eaeaea; }
+        .data-row { display: flex; border-bottom: 1px solid #f5f5f5; padding: 10px 0; }
+        .data-row:last-child { border-bottom: none; }
+        .data-key { font-weight: 600; width: 30%; min-width: 120px; color: #555; }
+        .data-value { width: 70%; word-break: break-word; color: #111; }
+        .data-value img { max-width: 100%; height: auto; border-radius: 4px; margin-top: 10px; }
+        .empty-state { text-align: center; padding: 50px; color: #888; }
     </style>
 </head>
 <body>
 
-    <div id="navigation-bar"></div>
-    <div id="page-content"></div>
-    
-    <div id="product-modal" class="modal-overlay" onclick="closeModal(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <span class="close-btn" onclick="closeModal(event)">×</span>
-            <div id="modal-body"></div>
-        </div>
-    </div>
+    <div id="nav-bar"></div>
+    <div id="main-view"></div>
 
-    <script id="site-data" type="application/json">{"Main":[{"Section":"Hero","Title":"No Data","Content":"No Data","Media":"https://drive.google.com/file/d/1W0jwIsEN1FEyY2Sib9qkxWONlTMn32RC/view?usp=sharing","Button":"No Data"},{"Section":"About Row1","Title":"你想要拥有自己的网页吗？","Content":"在这里你可以选择你想要的风格，我们可以帮你完成所有步骤。","Media":"x","Button":"No Data"},{"Section":"About Row2","Title":"你想要拥有自己的视频吗？","Content":"在这里我们可以为你提供你想要的视频，只要提供你的构想。","Media":"x","Button":"No Data"},{"Section":"About Row3","Title":"你想要拥有自己的游戏吗？","Content":"在这里我们可以为你设计出由你提供的构想而成的游戏。","Media":"x","Button":"No Data"},{"Section":"Footer","Title":"谢谢光临","Content":"No Data","Media":"No Data","Button":"No Data"}],"Global":[{"Sheet (Tab) / Page":"Navigation","Section":"No Data","Subsection":"No Data","PC Font Size":"16","Font Weight":"Bold","Text Color":"#4285f4","Bg Color/Pic":"#fff2cc","Bg Effect":"No Data","PC Width":"1","PC Height":"65px","PC Padding":"0 50px","PC Margin":"No Data","PC Alignment":"space-between","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"top fixed","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"auto","HP Padding":"0 20px","HP Margin":"No Data","HP Alignment":"space-between"},{"Sheet (Tab) / Page":"Navigation","Section":"Navigation Item","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"0 20px","PC Alignment":"left","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"left"},{"Sheet (Tab) / Page":"Navigation","Section":"Navigation Right","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"0 20px","PC Alignment":"right","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"right"},{"Sheet (Tab) / Page":"Main","Section":"Hero","Subsection":"Media","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"1","PC Height":"400px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"3000","HP Font Size":"No Data","HP Width":"1","HP Height":"auto","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Main","Section":"About","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"https://drive.google.com/file/d/1xVPjU0Gjjjl3m857KievH1RlOqTsre2T/view?usp=sharing","Bg Effect":"faint","PC Width":"1","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-column","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-column"},{"Sheet (Tab) / Page":"Main","Section":"About Row","Subsection":"No Data","PC Font Size":"28","Font Weight":"No Data","Text Color":"#0000ff","Bg Color/Pic":"#ffe0e0","Bg Effect":"No Data","PC Width":"0.7","PC Height":"No Data","PC Padding":"50px","PC Margin":"50px","PC Alignment":"flex-row","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"14px","HP Width":"0.9","HP Height":"No Data","HP Padding":"20px","HP Margin":"20px","HP Alignment":"flex-row"},{"Sheet (Tab) / Page":"Main","Section":"About Row","Subsection":"Content","PC Font Size":"16","Font Weight":"No Data","Text Color":"#9fc5e8","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"12px","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Main","Section":"About Row","Subsection":"Media","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"200px","PC Height":"200px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"8px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"100px","HP Height":"100px","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Main","Section":"About Row2","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#eeefba","Bg Color/Pic":"#fcffdc","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-reverse","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"right","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-reverse"},{"Sheet (Tab) / Page":"Main","Section":"Footer","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#3d85c6","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"#ffffff","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-row","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"No Data","HP Padding":"20px","HP Margin":"No Data","HP Alignment":"flex-column"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter Menu","Subsection":"No Data","PC Font Size":"24","Font Weight":"Normal","Text Color":"#84bfb6","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"0.3","PC Height":"No Data","PC Padding":"50px","PC Margin":"No Data","PC Alignment":"flex-column","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"fixed","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-row-wrap"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter Content","Subsection":"No Data","PC Font Size":"18","Font Weight":"Normal","Text Color":"#a95ea9","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"0.7","PC Height":"No Data","PC Padding":"50px","PC Margin":"No Data","PC Alignment":"flex-row-wrap","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-row-wrap"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter Content","Subsection":"Default Picture","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"200px","PC Height":"200px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"8px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"100px","HP Height":"100px","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Products","Section":"Product ID","Subsection":"Section","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"#f4e0ae","Bg Effect":"No Data","PC Width":"1","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-row-wrap","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"2000","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"20px","HP Margin":"50px","HP Alignment":"flex-row-center"},{"Sheet (Tab) / Page":"Products","Section":"Product ID","Subsection":"Content","PC Font Size":"16","Font Weight":"Normal","Text Color":"#000000","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"20px","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"6px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Products","Section":"Product ID","Subsection":"Media","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"200px","PC Height":"200px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"8px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"150px","HP Height":"150px","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Contact","Section":"No Data","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"https://drive.google.com/file/d/1z5OIt8p8fp90X2PfOa0lfBANp0AEb4ry/view?usp=sharing","Bg Effect":"dim","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Contact","Section":"Contact Item","Subsection":"No Data","PC Font Size":"16","Font Weight":"Normal","Text Color":"#a95ea9","Bg Color/Pic":"#ead1dc","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"40px","PC Margin":"50px","PC Alignment":"left","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"20px","HP Margin":"40px","HP Alignment":"left"},{"Sheet (Tab) / Page":"Contact","Section":"Contact Item","Subsection":"Title","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"120px","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Contact","Section":"Feedback","Subsection":"No Data","PC Font Size":"28","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"0.5","PC Height":"No Data","PC Padding":"50px","PC Margin":"No Data","PC Alignment":"center","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"center","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"center"},{"Sheet (Tab) / Page":"Contact","Section":"Feedback Form","Subsection":"No Data","PC Font Size":"16","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"0.5","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-column","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"center","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-column"},{"Sheet (Tab) / Page":"Contact","Section":"Feedback Form","Subsection":"Title","PC Font Size":"18","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"}],"Navigation":[{"Section":"Navigation Item","Title":"首页","Page Link":"Main"},{"Section":"Navigation Item","Title":"产品","Page Link":"Products"},{"Section":"Navigation Item","Title":"联系我们","Page Link":"Contact"},{"Section":"Navigation Right","Title":"中/EN","Page Link":"x"}],"Products":[{"Section":"Product Filter Menu Item","Title":"全部","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Menu Item","Title":"网页","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Menu Item","Title":"视频","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Menu Item","Title":"游戏","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Content Item","Title":"blog风格","Category / Tag":"网页","Default Picture":"x","Product ID":"item001","Content":"这个blog风","Media":"x"},{"Section":"Product Filter Content Item","Title":"产品风格","Category / Tag":"网页","Default Picture":"x","Product ID":"item002","Content":"这可以看各种产品","Media":"x"},{"Section":"Product Filter Content Item","Title":"商业风格","Category / Tag":"视频","Default Picture":"x","Product ID":"item003","Content":"这是商业风","Media":"x"},{"Section":"Product Filter Content Item","Title":"自创构思","Category / Tag":"视频","Default Picture":"x","Product ID":"item004","Content":"你给我故事，我帮你转换成视频","Media":"x"},{"Section":"Product Filter Content Item","Title":"纪念视频","Category / Tag":"视频","Default Picture":"x","Product ID":"item005","Content":"你给我照片，我帮你转换成视频","Media":"x"},{"Section":"Product Filter Content Item","Title":"回忆构思","Category / Tag":"视频","Default Picture":"x","Product ID":"item006","Content":"你给我回忆故事与照片，我帮你转换成照片","Media":"x"},{"Section":"Product Filter Content Item","Title":"冒险","Category / Tag":"游戏","Default Picture":"x","Product ID":"item007","Content":"冒险风","Media":"x"},{"Section":"Product Filter Content Item","Title":"卡牌","Category / Tag":"游戏","Default Picture":"x","Product ID":"item008","Content":"卡牌风","Media":"x"},{"Section":"Product Filter Content Item","Title":"建造","Category / Tag":"游戏","Default Picture":"x","Product ID":"item009","Content":"建造风","Media":"x"},{"Section":"Product Filter Content Item","Title":"自定义","Category / Tag":"网页","Default Picture":"x","Product ID":"item010","Content":"自己设计你想要的网页页面吧","Media":"x"},{"Section":"Product Filter Content Item","Title":"模仿","Category / Tag":"网页","Default Picture":"x","Product ID":"item011","Content":"你给我链接，我帮你换成它的格局","Media":"x"}],"Contact":[{"Section":"Contact Item","Title":"Email","Content":": xxxx@xxx.xxx","Media":"No Data","Button":"No Data"},{"Section":"Contact Item","Title":"Whatsapp","Content":": xxx-xxxxxx","Media":"No Data","Button":"No Data"},{"Section":"Feedback","Title":"Feedback","Content":"No Data","Media":"No Data","Button":"No Data"},{"Section":"Feedback Form","Title":"Name","Content":"Your Name","Media":"text","Button":"No Data"},{"Section":"Feedback Form","Title":"Email","Content":"Your Email","Media":"email","Button":"No Data"},{"Section":"Feedback Form","Title":"Description","Content":"Description","Media":"textarea","Button":"No Data"},{"Section":"Feedback Form","Title":"No Data","Content":"No Data","Media":"No Data","Button":"Submit"}]}</script>
+    <script id="site-data" type="application/json">{"Config":[{"Config Name (键)":"AI_Code_Generator_Prompt","Value / Rules (值/规则描述)":"【最高通用工程法案：全隔离·绝对抽象化 SPA 压铸引擎规约】\r\n\r\n1. 后端与全量压铸管道规范 (100% 纯净通用)：\r\n- 全局配置：代码顶层仅允许保留 GITHUB_TOKEN, REPO_OWNER, REPO_NAME, FILE_PATH 四个变量。严禁硬编码任何特定工作表名称。禁止使用 `doGet`。\r\n- buildMyWebsite：必须使用 ss.getSheets() 动态遍历当前电子表格中的所有非隐藏工作表。将表名作为 Key，行数据作为 Value，全量打包进 siteData 对象中，通过 JSON.stringify 压铸进前端 HTML 的 \u003cscript id=\"site-data\"> 标签中，实现与特定表名的完全解耦。\r\n- fetchSheetData 数据清洗：使用 data.shift() 剥离首行为键。遍历时凡是遇到完全空白或 \"-\" 的单元格，必须在底层强转为统一占位符 \"No Data\"。\r\n- doPost(e) 通用回流：接收前端异步传递的 JSON 数据。采用防御性查找：优先写入名为 \"Feedback\" 或 \"Form_Data\" 的工作表，若均不存在则默认写入当前电子表格的第 1 张工作表，自动追加带有 Date() 时间戳的行数据。\r\n- pushToGitHub 传输：先发送 GET 请求尝试获取当前文件的 sha 指纹，随后将静态 HTML 内容进行 Base64 编码，使用 PUT 请求直接覆盖推送至 GitHub 仓库。\r\n\r\n2. 前端通用元数据路由器规范 (必须在单个模板字符串内用纯原生 JavaScript 压铸实现)：\r\n- 自动导航生成 (initNavigation)：严禁硬编码菜单项。必须使用 `for (var sheetName in DB)` 动态遍历整个数据库的 Key（工作表名），自动生成对应 Hash 锚点的顶部导航链接。\r\n- 通用路由映射器 (renderRouter)：监听 hashchange 事件。根据当前浏览器 URL 的 #hash（默认兜底显示 \"Main\" 表或第一个 Key），去 DB 中进行不区分大小写的动态匹配。若未匹配到同名数据表，前端渲染 404 错误。若匹配成功，则获取该表的行数组，利用 `for (var key in row)` 嵌套循环，动态且通用地将所有非 \"No Data\" 的 [键: 值] 打印渲染为通用数据卡片列表。\r\n\r\n★ 核心业务逻辑绝对隔离法案 (CRITICAL ISOLATION PROTOCOL) ★：\r\n- 本表格下方（从第3行起）虽然保留了关于 Product, Contact, Feedback Form 等特定业务模块的明细描述，但【当前的 Apps Script 核心引擎构建阶段必须完全无视这些具体业务名词】。\r\n- 严禁在 Apps Script 代码中编写任何 `if (hash === 'product')`、`if (hash === 'contact')` 或针对特定表单字段的硬编码逻辑。\r\n- 下方所有的 Module 规则（如多行合并、表单变身映射等）仅作为未来前端动态解析的属性元数据参考。当前的代码生成必须维持绝对的抽象、通用与纯净，确保将此代码复制到任何全新的 Google Sheets 项目中时，均能直接运行并通用打印所有数据。"},{"Config Name (键)":"No Data","Value / Rules (值/规则描述)":"No Data"},{"Config Name (键)":"Module (模块)","Value / Rules (值/规则描述)":"Condition (触发条件)"},{"Config Name (键)":"Defensive Type Casting\n(全局防御性数据强转)","Value / Rules (值/规则描述)":"All data cells and data binding \noperations"},{"Config Name (键)":"Data Sanitization\n(数据清洗)","Value / Rules (值/规则描述)":"All columns across all sheets"},{"Config Name (键)":"Product Data Consolidation\n(商品多行合并)","Value / Rules (值/规则描述)":"Product ID multi-rows"},{"Config Name (键)":"Media Stream Transformer","Value / Rules (值/规则描述)":"All media link columns, image/video fields, and \nGoogle Drive URLs"},{"Config Name (键)":"SPA Hash Router Engine","Value / Rules (值/规则描述)":"All page navigations, navigation link clicks, and \nURL hash changes"},{"Config Name (键)":"Persistent Navigation\n(导航栏常驻机制)","Value / Rules (值/规则描述)":"Navigation sheet data"},{"Config Name (键)":"Dynamic Tab Titles\n(动态浏览器标题)","Value / Rules (值/规则描述)":"Dynamic page switching"},{"Config Name (键)":"Global CSS Mapper\n(全局样式映射引擎)","Value / Rules (值/规则描述)":"Parsing Global sheet columns"},{"Config Name (键)":"Cascading Style Inheritance\n(样式继承)","Value / Rules (值/规则描述)":"About Row* in Main sheet"},{"Config Name (键)":"Item Style Inheritance\n(子元素样式智能继承)","Value / Rules (值/规则描述)":"Any Section name ending with Item"},{"Config Name (键)":"Intelligent Background Parser\n(背景样式智能判定)","Value / Rules (值/规则描述)":"Bg Color/Pic column in Global sheet"},{"Config Name (键)":"Responsive Breakpoint\n\n(响应式断点切换)","Value / Rules (值/规则描述)":"Parsing Global style columns"},{"Config Name (键)":"Responsive Fallback Chain\n\n(响应式降级回退机制)","Value / Rules (值/规则描述)":"Parsing missing HP values"},{"Config Name (键)":"Flex Layout Engine\n(弹性排版引擎)","Value / Rules (值/规则描述)":"Parsing Alignment columns"},{"Config Name (键)":"Advanced Positioning Engine\n(高级定位引擎)","Value / Rules (值/规则描述)":"Parsing Layout Position column"},{"Config Name (键)":"Smart Parent-Child Wrapper\n(智能父子嵌套包装器)","Value / Rules (值/规则描述)":"Parsing sequential rows with suffix"},{"Config Name (键)":"Alternating Split Layout\n(图文交错)","Value / Rules (值/规则描述)":"About Row* in Main sheet"},{"Config Name (键)":"Product Gallery Overview\n(产品画廊列表页)","Value / Rules (值/规则描述)":"Default Picture & Title"},{"Config Name (键)":"Dynamic Product Filtering\n(动态产品筛选与联动)","Value / Rules (值/规则描述)":"Clicking Product Filter Menu Item"},{"Config Name (键)":"Product Detail Page Assets\n(产品详情页内容)","Value / Rules (值/规则描述)":"Content & Media in Product sheet"},{"Config Name (键)":"Product Detail Pop-up\n(详情局部弹窗)","Value / Rules (值/规则描述)":"Clicking valid product cards"},{"Config Name (键)":"Carousel State Control\n(智能视频轮播联动)","Value / Rules (值/规则描述)":"Multimedia slider in pop-up"},{"Config Name (键)":"Form Element Mapping\n(表单元素变身映射)","Value / Rules (值/规则描述)":"Feedback Form"},{"Config Name (键)":"Form Submission\n(表单提交响应)","Value / Rules (值/规则描述)":"Feedback Form"},{"Config Name (键)":"Custom logic override\n(动态逻辑兜底)","Value / Rules (值/规则描述)":"Non-style logic issues"}],"Global":[{"Sheet (Tab) / Page":"Navigation","Section":"No Data","Subsection":"No Data","PC Font Size":"16","Font Weight":"Bold","Text Color":"#4285f4","Bg Color/Pic":"#fff2cc","Bg Effect":"No Data","PC Width":"1","PC Height":"65px","PC Padding":"0 50px","PC Margin":"No Data","PC Alignment":"space-between","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"top fixed","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"auto","HP Padding":"0 20px","HP Margin":"No Data","HP Alignment":"space-between"},{"Sheet (Tab) / Page":"Navigation","Section":"Navigation Item","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"0 20px","PC Alignment":"left","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"left"},{"Sheet (Tab) / Page":"Navigation","Section":"Navigation Right","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"0 20px","PC Alignment":"right","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"right"},{"Sheet (Tab) / Page":"Main","Section":"Hero","Subsection":"Media","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"1","PC Height":"400px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"3000","HP Font Size":"No Data","HP Width":"1","HP Height":"auto","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Main","Section":"About","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"https://drive.google.com/file/d/1xVPjU0Gjjjl3m857KievH1RlOqTsre2T/view?usp=sharing","Bg Effect":"faint","PC Width":"1","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-column","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-column"},{"Sheet (Tab) / Page":"Main","Section":"About Row","Subsection":"No Data","PC Font Size":"28","Font Weight":"No Data","Text Color":"#0000ff","Bg Color/Pic":"#ffe0e0","Bg Effect":"No Data","PC Width":"0.7","PC Height":"No Data","PC Padding":"50px","PC Margin":"50px","PC Alignment":"flex-row","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"14px","HP Width":"0.9","HP Height":"No Data","HP Padding":"20px","HP Margin":"20px","HP Alignment":"flex-row"},{"Sheet (Tab) / Page":"Main","Section":"About Row","Subsection":"Content","PC Font Size":"16","Font Weight":"No Data","Text Color":"#9fc5e8","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"12px","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Main","Section":"About Row","Subsection":"Media","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"200px","PC Height":"200px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"8px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"100px","HP Height":"100px","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Main","Section":"About Row2","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#eeefba","Bg Color/Pic":"#fcffdc","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-reverse","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"right","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-reverse"},{"Sheet (Tab) / Page":"Main","Section":"Footer","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#3d85c6","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"#ffffff","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-row","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"No Data","HP Padding":"20px","HP Margin":"No Data","HP Alignment":"flex-column"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter Menu","Subsection":"No Data","PC Font Size":"24","Font Weight":"Normal","Text Color":"#84bfb6","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"0.3","PC Height":"No Data","PC Padding":"50px","PC Margin":"No Data","PC Alignment":"flex-column","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"fixed","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-row-wrap"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter Content","Subsection":"No Data","PC Font Size":"18","Font Weight":"Normal","Text Color":"#a95ea9","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"0.7","PC Height":"No Data","PC Padding":"50px","PC Margin":"No Data","PC Alignment":"flex-row-wrap","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-row-wrap"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter Content","Subsection":"Default Picture","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"200px","PC Height":"200px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"8px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"100px","HP Height":"100px","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Products","Section":"Product ID","Subsection":"Section","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"#f4e0ae","Bg Effect":"No Data","PC Width":"1","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-row-wrap","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"2000","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"20px","HP Margin":"50px","HP Alignment":"flex-row-center"},{"Sheet (Tab) / Page":"Products","Section":"Product ID","Subsection":"Content","PC Font Size":"16","Font Weight":"Normal","Text Color":"#000000","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"20px","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"6px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Products","Section":"Product ID","Subsection":"Media","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"200px","PC Height":"200px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"8px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"150px","HP Height":"150px","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Contact","Section":"No Data","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"https://drive.google.com/file/d/1z5OIt8p8fp90X2PfOa0lfBANp0AEb4ry/view?usp=sharing","Bg Effect":"dim","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Contact","Section":"Contact Item","Subsection":"No Data","PC Font Size":"16","Font Weight":"Normal","Text Color":"#a95ea9","Bg Color/Pic":"#ead1dc","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"40px","PC Margin":"50px","PC Alignment":"left","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"20px","HP Margin":"40px","HP Alignment":"left"},{"Sheet (Tab) / Page":"Contact","Section":"Contact Item","Subsection":"Title","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"120px","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Contact","Section":"Feedback","Subsection":"No Data","PC Font Size":"28","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"0.5","PC Height":"No Data","PC Padding":"50px","PC Margin":"No Data","PC Alignment":"center","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"center","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"center"},{"Sheet (Tab) / Page":"Contact","Section":"Feedback Form","Subsection":"No Data","PC Font Size":"16","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"0.5","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-column","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"center","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-column"},{"Sheet (Tab) / Page":"Contact","Section":"Feedback Form","Subsection":"Title","PC Font Size":"18","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"}],"Navigation":[{"Section":"Navigation Item","Title":"首页","Page Link":"Main"},{"Section":"Navigation Item","Title":"产品","Page Link":"Products"},{"Section":"Navigation Item","Title":"联系我们","Page Link":"Contact"},{"Section":"Navigation Right","Title":"中/EN","Page Link":"x"}],"Main":[{"Section":"Hero","Title":"No Data","Content":"No Data","Media":"https://drive.google.com/file/d/1W0jwIsEN1FEyY2Sib9qkxWONlTMn32RC/view?usp=sharing","Button":"No Data"},{"Section":"About Row1","Title":"你想要拥有自己的网页吗？","Content":"在这里你可以选择你想要的风格，我们可以帮你完成所有步骤。","Media":"x","Button":"No Data"},{"Section":"About Row2","Title":"你想要拥有自己的视频吗？","Content":"在这里我们可以为你提供你想要的视频，只要提供你的构想。","Media":"x","Button":"No Data"},{"Section":"About Row3","Title":"你想要拥有自己的游戏吗？","Content":"在这里我们可以为你设计出由你提供的构想而成的游戏。","Media":"x","Button":"No Data"},{"Section":"Footer","Title":"谢谢光临","Content":"No Data","Media":"No Data","Button":"No Data"}],"Products":[{"Section":"Product Filter Menu Item","Title":"全部","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Menu Item","Title":"网页","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Menu Item","Title":"视频","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Menu Item","Title":"游戏","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Content Item","Title":"blog风格","Category / Tag":"网页","Default Picture":"x","Product ID":"item001","Content":"这个blog风","Media":"x"},{"Section":"Product Filter Content Item","Title":"产品风格","Category / Tag":"网页","Default Picture":"x","Product ID":"item002","Content":"这可以看各种产品","Media":"x"},{"Section":"Product Filter Content Item","Title":"商业风格","Category / Tag":"视频","Default Picture":"x","Product ID":"item003","Content":"这是商业风","Media":"x"},{"Section":"Product Filter Content Item","Title":"自创构思","Category / Tag":"视频","Default Picture":"x","Product ID":"item004","Content":"你给我故事，我帮你转换成视频","Media":"x"},{"Section":"Product Filter Content Item","Title":"纪念视频","Category / Tag":"视频","Default Picture":"x","Product ID":"item005","Content":"你给我照片，我帮你转换成视频","Media":"x"},{"Section":"Product Filter Content Item","Title":"回忆构思","Category / Tag":"视频","Default Picture":"x","Product ID":"item006","Content":"你给我回忆故事与照片，我帮你转换成照片","Media":"x"},{"Section":"Product Filter Content Item","Title":"冒险","Category / Tag":"游戏","Default Picture":"x","Product ID":"item007","Content":"冒险风","Media":"x"},{"Section":"Product Filter Content Item","Title":"卡牌","Category / Tag":"游戏","Default Picture":"x","Product ID":"item008","Content":"卡牌风","Media":"x"},{"Section":"Product Filter Content Item","Title":"建造","Category / Tag":"游戏","Default Picture":"x","Product ID":"item009","Content":"建造风","Media":"x"},{"Section":"Product Filter Content Item","Title":"自定义","Category / Tag":"网页","Default Picture":"x","Product ID":"item010","Content":"自己设计你想要的网页页面吧","Media":"x"},{"Section":"Product Filter Content Item","Title":"模仿","Category / Tag":"网页","Default Picture":"x","Product ID":"item011","Content":"你给我链接，我帮你换成它的格局","Media":"x"}],"Contact":[{"Section":"Contact Item","Title":"Email","Content":": xxxx@xxx.xxx","Media":"No Data","Button":"No Data"},{"Section":"Contact Item","Title":"Whatsapp","Content":": xxx-xxxxxx","Media":"No Data","Button":"No Data"},{"Section":"Feedback","Title":"Feedback","Content":"No Data","Media":"No Data","Button":"No Data"},{"Section":"Feedback Form","Title":"Name","Content":"Your Name","Media":"text","Button":"No Data"},{"Section":"Feedback Form","Title":"Email","Content":"Your Email","Media":"email","Button":"No Data"},{"Section":"Feedback Form","Title":"Description","Content":"Description","Media":"textarea","Button":"No Data"},{"Section":"Feedback Form","Title":"No Data","Content":"No Data","Media":"No Data","Button":"Submit"}],"Feedback":[]}</script>
 
     <script>
+        // 核心接管数据库
         var DB = JSON.parse(document.getElementById('site-data').textContent);
-        var WEB_APP_URL = "YOUR_WEB_APP_URL_HERE";
+        var WEB_APP_URL = "";
 
-        // ==========================================
-        // 法案 1：网盘图片极速直链与动图防拦截
-        // ==========================================
-        function parseMediaUrl(url) {
-            if (!url || url === "No Data") return "";
-            if (url.toLowerCase() === "x") return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23eee'/></svg>";
-            if (url.indexOf("drive.google.com") > -1) {
-                try {
-                    // 最稳妥的字符串切割法，绝不报错
-                    var id = url.split("/d/")[1].split("/")[0];
-                    return "https://lh3.googleusercontent.com/d/" + id;
-                } catch(e) { return url; }
+        // 法案外挂：基础直链安全转换（保留用于防报错展示）
+        function safeParseMedia(val) {
+            if (typeof val === 'string' && val.indexOf('drive.google.com') > -1) {
+                try { return "https://lh3.googleusercontent.com/d/" + val.split("/d/")[1].split("/")[0]; } catch(e) { return val; }
             }
-            return url;
+            return val;
         }
 
         // ==========================================
-        // 法案 2：全局样式找寻与血统继承
+        // 通用路由器 (无视一切特化业务)
         // ==========================================
-        function getStyleRule(sectionName) {
-            var exact = DB.Global.find(function(s) { return s.Section === sectionName; });
-            if (exact) return exact;
-            var parentName = sectionName;
-            // 处理 Product Filter Menu Item -> Product Filter Menu
-            if (sectionName.indexOf(" Item") > -1) parentName = sectionName.replace(" Item", "");
-            // 处理 About Row 1 -> About Row -> About
-            else if (sectionName.match(/ Row( \d+)?$/)) {
-                parentName = sectionName.replace(/ Row( \d+)?$/, " Row");
-                var parent = DB.Global.find(function(s) { return s.Section === parentName; });
-                if (!parent) parentName = parentName.replace(" Row", "");
-            }
-            return DB.Global.find(function(s) { return s.Section === parentName; }) || { Section: sectionName };
-        }
-
-        // ==========================================
-        // 法案 3：768px 断点与 HP 父级降级回退
-        // ==========================================
-        function getFallbackHP(prop, selfRule, parentRule) {
-            var hpVal = selfRule['HP ' + prop];
-            if (!hpVal || hpVal === "No Data") {
-                if (parentRule && parentRule['HP ' + prop] && parentRule['HP ' + prop] !== "No Data") return parentRule['HP ' + prop];
-                return selfRule['PC ' + prop];
-            }
-            return hpVal;
-        }
-
-        // ==========================================
-        // 法案 4：全局样式编译器 (编译并注入 CSS)
-        // ==========================================
-        function compileDynamicCSS() {
-            var styleTag = document.createElement('style');
-            var cssContent = "";
+        function renderRouter() {
+            var hash = window.location.hash.substring(1);
+            if (!hash) hash = Object.keys(DB)[0] || "Main"; 
             
-            DB.Global.forEach(function(rule, idx) {
-                var cls = "dyn-style-" + idx;
-                rule._compiledClass = cls; 
-                
-                // 1. 解析背景（智能区分颜色与图片）
-                var bgCss = "";
-                var bg = rule['Bg Color/Pic'];
-                if (bg && bg !== "No Data") {
-                    if (bg.indexOf('http') === 0 || bg.indexOf('data:') === 0) {
-                        bgCss = "background-image: url('" + parseMediaUrl(bg) + "'); background-size: cover; background-position: center;";
-                    } else {
-                        bgCss = "background-color: " + bg + ";";
-                    }
-                }
-                cssContent += "." + cls + " { " + bgCss;
-                
-                // 2. 解析基础 PC CSS
-                if (rule['PC Width'] && rule['PC Width'] !== "No Data") cssContent += "width:" + rule['PC Width'] + "; ";
-                if (rule['PC Height'] && rule['PC Height'] !== "No Data") cssContent += "height:" + rule['PC Height'] + "; ";
-                if (rule['PC Padding'] && rule['PC Padding'] !== "No Data") cssContent += "padding:" + rule['PC Padding'] + "; ";
-                if (rule['PC Margin'] && rule['PC Margin'] !== "No Data") cssContent += "margin:" + rule['PC Margin'] + "; ";
-                if (rule['Border Radius'] && rule['Border Radius'] !== "No Data") cssContent += "border-radius:" + rule['Border Radius'] + "; ";
-                if (rule['Text Color'] && rule['Text Color'] !== "No Data") cssContent += "color:" + rule['Text Color'] + "; ";
-                if (rule['PC Font Size'] && rule['PC Font Size'] !== "No Data") cssContent += "font-size:" + rule['PC Font Size'] + "px; ";
-                if (rule['Font Weight'] && rule['Font Weight'] !== "No Data") cssContent += "font-weight:" + rule['Font Weight'].toLowerCase() + "; ";
-                
-                // 3. 🌟 高级定位引擎：识别 top fixed
-                if (rule['Layout Position'] && rule['Layout Position'].indexOf('top fixed') > -1) {
-                    cssContent += "position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; z-index: 9999 !important; background-color: inherit; ";
-                }
-                cssContent += "} ";
+            var view = document.getElementById("main-view");
+            view.innerHTML = "";
 
-                // 4. 解析 HP 回退
-                var parentName = rule.Section.replace(" Item", "").replace(/ Row( \d+)?$/, "");
-                var parentRule = DB.Global.find(function(s) { return s.Section === parentName; });
-                var hpWidth = getFallbackHP('Width', rule, parentRule), hpHeight = getFallbackHP('Height', rule, parentRule);
-                var hpPadding = getFallbackHP('Padding', rule, parentRule), hpMargin = getFallbackHP('Margin', rule, parentRule);
-                var hpFontSize = getFallbackHP('Font Size', rule, parentRule), hpAlign = getFallbackHP('Alignment', rule, parentRule);
-
-                cssContent += "@media (max-width: 768px) { ." + cls + " { ";
-                if (hpWidth && hpWidth !== "No Data") cssContent += "width:" + hpWidth + " !important; ";
-                if (hpHeight && hpHeight !== "No Data") cssContent += "height:" + hpHeight + " !important; ";
-                if (hpPadding && hpPadding !== "No Data") cssContent += "padding:" + hpPadding + " !important; ";
-                if (hpMargin && hpMargin !== "No Data") cssContent += "margin:" + hpMargin + " !important; ";
-                if (hpFontSize && hpFontSize !== "No Data") cssContent += "font-size:" + hpFontSize + "px !important; ";
-                if (hpAlign && hpAlign.indexOf('flex-column') > -1) cssContent += "flex-direction:column !important; ";
-                if (hpAlign && hpAlign.indexOf('flex-reverse') > -1) cssContent += "flex-direction:column-reverse !important; ";
-                cssContent += "} } ";
-            });
-            styleTag.innerHTML = cssContent;
-            document.head.appendChild(styleTag);
-        }
-
-        // ==========================================
-        // 法案 5：Flex 排版物理转换
-        // ==========================================
-        function getLayoutClasses(rule) {
-            var classes = [rule._compiledClass, "flex-container"];
-            var align = rule['PC Alignment'] || "";
-            var isCol = align.indexOf("flex-column") > -1, isRev = align.indexOf("flex-reverse") > -1 || align.indexOf("right") > -1;
-            
-            if (isCol && isRev) classes.push("flex-column-reverse");
-            else if (isCol) classes.push("flex-column");
-            else if (isRev) classes.push("flex-row-reverse");
-            else classes.push("flex-row");
-            
-            if (rule['Layout Position'] === "center" || align.indexOf("center") > -1) classes.push("justify-center");
-            return classes.join(" ");
-        }
-
-        // 内部区块生成器（防空值）
-        function renderInnerSection(row) {
-            if (row.Section === "Hero" || row.Section === "Header") {
-                if (row.Media !== "No Data") return '<img src="' + parseMediaUrl(row.Media) + '" style="width:100%; height:100%; object-fit:cover;">';
-                return "";
-            }
-            var textBlock = '';
-            if (row.Title !== "No Data" || row.Content !== "No Data") {
-                textBlock = '<div style="flex:1; padding:20px; min-width:300px;"><h2 style="margin-bottom:15px;">' + (row.Title !== "No Data" ? row.Title : "") + '</h2><p style="line-height:1.6; white-space:pre-wrap;">' + (row.Content !== "No Data" ? row.Content : "") + '</p></div>';
-            }
-            var mediaBlock = '';
-            if (row.Media !== "No Data") {
-                mediaBlock = '<div style="flex:1; display:flex; justify-content:center; padding:20px; min-width:300px;"><img src="' + parseMediaUrl(row.Media) + '" style="max-width:100%; border-radius:8px;"></div>';
-            }
-            return textBlock + mediaBlock;
-        }
-
-        // ==========================================
-        // 🌟 法案 6：智能嵌套包裹引擎 (处理 About -> About Row)
-        // ==========================================
-        function renderSheetContent(sheetArray) {
-            var htmlOutput = "";
-            var currentGroup = null;
-            var groups = [];
-            
-            // 扫描分类连续的 Row
-            sheetArray.forEach(function(row) {
-                if (row.Section.indexOf(' Row') > -1) {
-                    var baseName = row.Section.split(' Row')[0];
-                    if (!currentGroup || currentGroup.name !== baseName) {
-                        currentGroup = { name: baseName, isWrapper: true, rows: [] };
-                        groups.push(currentGroup);
-                    }
-                    currentGroup.rows.push(row);
-                } else {
-                    currentGroup = null;
-                    groups.push({ name: row.Section, isWrapper: false, row: row });
-                }
+            // 导航栏高亮状态同步
+            document.querySelectorAll('#nav-bar a').forEach(function(el) {
+                if(el.getAttribute('href') === '#' + hash) el.classList.add('active');
+                else el.classList.remove('active');
             });
 
-            // 渲染打包好的区块
-            groups.forEach(function(g) {
-                if (g.isWrapper) {
-                    var pRules = getStyleRule(g.name); // 拿老父亲 About 的样式（背景、100%长宽、flex-column）
-                    var html = '<div class="' + getLayoutClasses(pRules) + '">';
-                    g.rows.forEach(function(r) {
-                        // 内部放 About Row 的小盒子（70% 宽，flex-row）
-                        html += '<div class="' + getLayoutClasses(getStyleRule(r.Section)) + '">' + renderInnerSection(r) + '</div>';
-                    });
-                    html += '</div>';
-                    htmlOutput += html;
-                } else {
-                    htmlOutput += '<div class="' + getLayoutClasses(getStyleRule(g.name)) + '">' + renderInnerSection(g.row) + '</div>';
-                }
-            });
-            return htmlOutput;
-        }
+            // 不区分大小写的动态匹配
+            var targetKey = Object.keys(DB).find(function(k) { return k.toLowerCase() === hash.toLowerCase(); });
+            var targetTable = targetKey ? DB[targetKey] : null;
 
-        // ==========================================
-        // 🌟 法案 7：动态路由映射器 (读取 Link 同名工作表)
-        // ==========================================
-        function renderPage() {
-            var hash = window.location.hash.substring(1).toLowerCase() || "main";
-            var contentDiv = document.getElementById("page-content");
-            contentDiv.innerHTML = ""; 
+            if (!targetTable) {
+                view.innerHTML = "<div class='empty-state'><h2>404</h2><p>未找到匹配的工作表: " + hash + "</p></div>";
+                document.title = "404 Not Found";
+                return;
+            }
 
-            // 如果 Link 是 product，自动执行产品页逻辑
-            if (hash.indexOf("product") > -1 && DB.Product && DB.Product.length > 0) {
-                document.title = "产品展示";
-                var wrapRules = getStyleRule("Product Filter Container");
-                var html = '<div class="' + getLayoutClasses(wrapRules) + ' align-items-start">';
-                
-                var menuRules = getStyleRule("Product Filter Menu");
-                var menuHtml = '<div class="' + menuRules._compiledClass + ' flex-column" style="min-width:200px;">';
-                var menus = DB.Product.filter(function(r) { return r.Section === "Product Filter Menu Item"; });
-                menus.forEach(function(m, i) {
-                    var mRule = getStyleRule(m.Section);
-                    var activeCls = i === 0 ? "active" : "";
-                    menuHtml += '<div class="filter-menu-item ' + mRule._compiledClass + ' ' + activeCls + '" onclick="filterProducts(this, \'' + m.Title + '\')">' + m.Title + '</div>';
-                });
-                menuHtml += '</div>';
-
-                var gridRules = getStyleRule("Product Grid");
-                var gridHtml = '<div class="' + gridRules._compiledClass + ' flex-container flex-row" style="flex-wrap:wrap; flex:1; padding:20px;" id="product-grid">';
-                DB.Product.filter(function(r) { return r.Section === "Product Filter Content Item"; }).forEach(function(item) {
-                    var iRule = getStyleRule(item.Section);
-                    gridHtml += '<div class="product-card ' + iRule._compiledClass + ' flex-column justify-center" data-category="' + item['Category / Tag'] + '" onclick="openModal(\'' + item['Product ID'] + '\')">' +
-                                '<img src="' + parseMediaUrl(item.Media) + '" style="width:100%; height:200px; object-fit:cover; border-radius:8px;">' +
-                                '<h3 style="margin-top:10px;">' + item.Title + '</h3>' +
-                                '<p style="color:#666; font-size:14px;">' + (item.Content !== "No Data" ? item.Content : "") + '</p></div>';
-                });
-                gridHtml += '</div>';
-                contentDiv.innerHTML = html + menuHtml + gridHtml + '</div>';
-                if(menus.length > 0) filterProducts(document.querySelector('.filter-menu-item'), menus[0].Title);
-
-            // 如果 Link 是 contact，执行联系页逻辑
-            } else if (hash.indexOf("contact") > -1 && DB.Contact && DB.Contact.length > 0) {
-                document.title = "联系我们";
-                var cRules = getStyleRule("Contact Container");
-                var cHtml = '<div class="' + getLayoutClasses(cRules) + '">';
-                DB.Contact.forEach(function(row) {
-                    var rRules = getStyleRule(row.Section);
-                    if (row.Section === "Feedback Form") {
-                        if (row.Button === "Submit") cHtml += '<button onclick="submitForm()" class="' + rRules._compiledClass + '">提交留言</button>';
-                        else if (row.Media !== "No Data") cHtml += '<div class="' + rRules._compiledClass + ' flex-column" style="margin-bottom:10px;"><label style="font-weight:bold; margin-bottom:5px;">' + row.Title + '</label>' + (row.Media === 'textarea' ? '<textarea id="' + row.Title + '" placeholder="' + row.Content + '" rows="4"></textarea>' : '<input type="' + row.Media + '" id="' + row.Title + '" placeholder="' + row.Content + '">') + '</div>';
-                    } else if (row.Section === "Contact Item") {
-                        cHtml += '<div class="flex-container flex-row ' + rRules._compiledClass + '" style="margin-bottom:10px;"><div style="width:120px; font-weight:bold;">' + row.Title + ' :</div><div>' + (row.Content !== "No Data" ? row.Content : "") + '</div></div>';
-                    } else cHtml += '<h1 class="' + rRules._compiledClass + '" style="margin-bottom:20px;">' + row.Title + '</h1>';
-                });
-                contentDiv.innerHTML = cHtml + '</div>';
+            document.title = "页面 - " + targetKey;
+            var htmlContent = "<h1 style='margin-bottom:25px; color:#1a1a1a;'>" + targetKey + " Data</h1>";
             
-            // 默认兜底：根据 Link 名称去动态匹配是否有对应的 sheet (比如 main)，没有则回滚至 Main 表
+            if (targetTable.length === 0) {
+                htmlContent += "<div class='empty-state'>该工作表暂无数据</div>";
             } else {
-                document.title = "页面 - " + hash;
-                var targetSheetData = DB.Main; // 兜底
-                if (hash === "main") targetSheetData = DB.Main;
-                else if (DB[hash]) targetSheetData = DB[hash]; 
-                
-                contentDiv.innerHTML = renderSheetContent(targetSheetData);
+                targetTable.forEach(function(row) {
+                    htmlContent += "<div class='generic-card'>";
+                    // 通用打印所有的键值对
+                    for (var key in row) {
+                        if (row.hasOwnProperty(key) && row[key] !== "No Data") {
+                            var val = row[key];
+                            var displayVal = val;
+                            // 基础容错：如果像是个图片链接，尝试渲染下
+                            if (typeof val === 'string' && (val.indexOf('http') === 0 || val.indexOf('data:image') === 0) && (val.indexOf('.jpg') > -1 || val.indexOf('.png') > -1 || val.indexOf('drive.google.com') > -1)) {
+                                displayVal = "<img src='" + safeParseMedia(val) + "' alt='Media'>";
+                            }
+                            htmlContent += "<div class='data-row'><div class='data-key'>" + key + "</div><div class='data-value'>" + displayVal + "</div></div>";
+                        }
+                    }
+                    htmlContent += "</div>";
+                });
             }
+            view.innerHTML = htmlContent;
+            window.scrollTo(0, 0);
         }
 
         // ==========================================
-        // 交互逻辑绑定 (过滤、弹窗、提交)
+        // 自动导航生成器 (解耦配置)
         // ==========================================
-        function filterProducts(elem, category) {
-            document.querySelectorAll('.filter-menu-item').forEach(function(el) { el.classList.remove('active'); });
-            elem.classList.add('active');
-            document.querySelectorAll('.product-card').forEach(function(card) {
-                if (category === "全部" || category === "All" || card.getAttribute('data-category') === category) card.style.display = "flex";
-                else card.style.display = "none";
-            });
-        }
-
-        function openModal(productId) {
-            if (!productId || productId === "No Data") return;
-            var relatedItems = DB.Product.filter(function(r) { return r['Product ID'] === productId; });
-            if (relatedItems.length === 0) return;
-            var bodyHtml = '<h2 style="margin-bottom:20px; border-bottom:2px solid #eee; padding-bottom:10px;">' + relatedItems[0].Title + '</h2><div class="flex-container flex-row" style="flex-wrap:wrap; gap:15px;">';
-            relatedItems.forEach(function(item) {
-                bodyHtml += '<div style="flex:1; min-width:250px;">';
-                if(item.Media !== "No Data") bodyHtml += '<img src="' + parseMediaUrl(item.Media) + '" style="width:100%; border-radius:8px;">';
-                if(item.Content !== "No Data") bodyHtml += '<p style="margin-top:10px; color:#555;">' + item.Content + '</p>';
-                bodyHtml += '</div>';
-            });
-            bodyHtml += '</div>';
-            document.getElementById('modal-body').innerHTML = bodyHtml;
-            document.getElementById('product-modal').style.display = 'flex';
-        }
-
-        function closeModal(e) {
-            if (e.target.id === 'product-modal' || e.target.className === 'close-btn') document.getElementById('product-modal').style.display = 'none';
-        }
-
-        function submitForm() {
-            var payload = { Name: document.getElementById("Name") ? document.getElementById("Name").value : "", Email: document.getElementById("Email") ? document.getElementById("Email").value : "", Description: document.getElementById("Description") ? document.getElementById("Description").value : "" };
-            fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) }).then(function(res) { return res.json(); }).then(function(data) {
-                if (data.status === 'success') { alert("提交成功！"); location.reload(); } else alert("提交异常，请稍后再试。");
-            }).catch(function(e) { console.error(e); });
-        }
-
         function initNavigation() {
-            var navDiv = document.getElementById("navigation-bar");
-            var nRules = getStyleRule("Navigation");
-            var cls = nRules._compiledClass ? nRules._compiledClass : "";
-            navDiv.className = cls + " flex-container flex-row";
-            
-            var leftMenu = '<div class="flex-row">';
-            var rightMenu = '<div class="flex-row">';
-            
-            DB.Navigation.forEach(function(row) {
-                var rRule = getStyleRule(row.Section);
-                var linkCls = rRule._compiledClass ? rRule._compiledClass : "";
-                
-                // 🌟 终极匹配：支持你最新设计的 "Page Link"（带空格必须用括号读取），同时向下兼容其他名字
-                var rawLink = row['Page Link'] || row.html || row.Link || ""; 
-                var safeLink = (rawLink && rawLink !== "No Data") ? rawLink.toLowerCase() : "";
-                var safeTitle = (row.Title && row.Title !== "No Data") ? row.Title : "";
-                
-                var link = '<a href="#' + safeLink + '" class="' + linkCls + '" style="text-decoration:none;">' + safeTitle + '</a>';
-                
-                if (row.Section === "Navigation Item") leftMenu += link;
-                if (row.Section === "Navigation Right") rightMenu += link;
-            });
-            navDiv.innerHTML = leftMenu + "</div>" + rightMenu + "</div>";
+            var nav = document.getElementById("nav-bar");
+            var navHtml = "";
+            for (var sheetName in DB) {
+                if (DB.hasOwnProperty(sheetName)) {
+                    // 过滤掉 Config 等不想直接展示的后台表（可选增强）
+                    if(sheetName.toLowerCase() !== "config") {
+                        navHtml += '<a href="#' + sheetName + '">' + sheetName + '</a>';
+                    }
+                }
+            }
+            nav.innerHTML = navHtml;
         }
 
-        window.addEventListener('hashchange', function() { window.scrollTo(0, 0); renderPage(); });
-        window.onload = function() { compileDynamicCSS(); initNavigation(); renderPage(); };
+        window.addEventListener('hashchange', renderRouter);
+        window.onload = function() { 
+            initNavigation(); 
+            renderRouter();
+        };
     </script>
 </body>
 </html>
