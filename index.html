@@ -280,8 +280,7 @@
             } else if (hash.indexOf("contact") > -1 && DB.Contact && DB.Contact.length > 0) {
                 document.title = "联系我们";
                 var cRules = getStyleRule("Contact Container");
-                var html = '<div class="' + getLayoutClasses(wrapRules) + ' flex-column contact-wrapper contact-clear-gap" style="width:100%;">';
-                var cHtml = '<div class="' + getLayoutClasses(cRules) + '">';
+                var cHtml = '<div class="' + getLayoutClasses(cRules) + ' flex-column contact-wrapper contact-clear-gap" style="width:100%;">';
                 DB.Contact.forEach(function(row) {
                     var rRules = getStyleRule(row.Section);
                     if (row.Section === "Feedback Form") {
