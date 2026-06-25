@@ -244,7 +244,7 @@
             var productDB = DB.product || DB.products;
 
             // 如果 Link 是 product，自动执行产品页逻辑
-            if (hash.indexOf("product") > -1 && DB.Product && DB.Product.length > 0) {
+            if (hash.indexOf("products") > -1 && DB.Product && DB.Product.length > 0) {
                 document.title = "产品展示";
                 var wrapRules = getStyleRule("Product Filter Container");
                 var html = '<div class="' + getLayoutClasses(wrapRules) + ' align-items-start">';
