@@ -244,7 +244,7 @@
             var productDB = DB.product || DB.products;
 
             // 如果 Link 是 product，自动执行产品页逻辑
-            if (hash.indexOf("products") > -1 && DB.Product && DB.Product.length > 0) {
+            if (hash.indexOf("products") > -1 && DB.Products && DB.Products.length > 0) {
                 document.title = "产品展示";
                 var wrapRules = getStyleRule("Product Filter Container");
                 var html = '<div class="' + getLayoutClasses(wrapRules) + ' align-items-start">';
@@ -341,22 +341,20 @@
         function initNavigation() {
             var navDiv = document.getElementById("navigation-bar");
             var nRules = getStyleRule("Navigation");
-            var cls = nRules._compiledClass ? nRules._compiledClass : "";
-            navDiv.className = cls + " flex-container flex-space-between";
+            navDiv.className = nRules._compiledClass + " flex-container flex-space-between";
             
             var leftMenu = '<div class="flex-row">';
             var rightMenu = '<div class="flex-row">';
             
             DB.Navigation.forEach(function(row) {
                 var rRule = getStyleRule(row.Section);
-                var linkCls = rRule._compiledClass ? rRule._compiledClass : "";
                 
                 // 🌟 终极匹配：支持你最新设计的 "Page Link"（带空格必须用括号读取），同时向下兼容其他名字
                 var rawLink = row['Page Link'] || row.html || row.Link || ""; 
                 var safeLink = (rawLink && rawLink !== "No Data") ? rawLink.toLowerCase() : "";
                 var safeTitle = (row.Title && row.Title !== "No Data") ? row.Title : "";
                 
-                var link = '<a href="#' + safeLink + '" class="' + linkCls + '" style="text-decoration:none;">' + safeTitle + '</a>';
+                var link = '<a href="#' + safeLink + '" class="' + rRule._compiledClass + '" style="text-decoration:none;">' + safeTitle + '</a>';
                 
                 if (row.Section === "Navigation Item") leftMenu += link;
                 if (row.Section === "Navigation Right") rightMenu += link;
