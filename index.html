@@ -15,11 +15,11 @@
         .flex-container { display: flex; flex-wrap: wrap; width: 100%; }
         .flex-row { flex-direction: row; align-items: center; }
         .flex-row-reverse { flex-direction: row-reverse; align-items: center; }
-        .flex-column { flex-direction: column; }
+        .flex-column { display: flex; flex-direction: column; }
         .flex-column-reverse { flex-direction: column-reverse; }
+        .flex-space-between { display: flex; justify-content: space-between; width: 100%; align items: center; }
         .justify-center { justify-content: center; text-align: center; margin: 0 auto; }
-        .justify-space-between { justify-content: space-between; width: 100%; }
-        
+
         /* 组件交互特效 */
         .filter-menu-item { cursor: pointer; padding: 10px 15px; margin-bottom: 5px; font-weight: bold; border-radius: 4px; transition: 0.3s; }
         .filter-menu-item:hover, .filter-menu-item.active { background-color: #e0e0e0; }
@@ -30,6 +30,10 @@
         .close-btn { position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer; font-weight:bold; }
         input, textarea { width: 100%; padding: 10px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; }
         button { cursor: pointer; border: none; padding: 10px 20px; font-weight: bold; border-radius: 4px; }
+        /* 👇 清除 Contact 区域所有子元素的浏览器默认恶性大边距 */
+        .contact-wrapper, .contact-wrapper * { box-sizing: border-box; }
+        .contact-clear-gap { gap: 0 !important; }
+        .contact-clear-gap * { margin: 0; padding: 0; }
     </style>
 </head>
 <body>
@@ -244,7 +248,7 @@
             var productDB = DB.product || DB.products;
 
             // 如果 Link 是 product，自动执行产品页逻辑
-            if (hash.indexOf("products") > -1 && DB.Products && DB.Products.length > 0) {
+            if (hash.indexOf("products") > -1 && productDB && productDB.length > 0) {
                 document.title = "产品展示";
                 var wrapRules = getStyleRule("Product Filter Container");
                 var html = '<div class="' + getLayoutClasses(wrapRules) + ' align-items-start">';
@@ -276,6 +280,7 @@
             } else if (hash.indexOf("contact") > -1 && DB.Contact && DB.Contact.length > 0) {
                 document.title = "联系我们";
                 var cRules = getStyleRule("Contact Container");
+                var html = '<div class="' + getLayoutClasses(wrapRules) + ' flex-column contact-wrapper contact-clear-gap" style="width:100%;">';
                 var cHtml = '<div class="' + getLayoutClasses(cRules) + '">';
                 DB.Contact.forEach(function(row) {
                     var rRules = getStyleRule(row.Section);
