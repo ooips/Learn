@@ -6,7 +6,7 @@
     <title>Master Showcase SPA</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        body { background-color: #fafafa; padding-top: 70px; } 
+        body { background-color: #fafafa; } 
         .flex-container { display: flex; }
         .flex-row { display: flex; flex-direction: row; align-items: center; }
         .flex-column { display: flex; flex-direction: column; }
@@ -21,12 +21,24 @@
         .filter-menu-item.active { background-color: #4285f4 !important; color: white !important; }
         .product-card { cursor: pointer; transition: transform 0.2s; background: white; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin: 10px; width: calc(33.33% - 20px); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        /* 🌟 弹窗组件样式 */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 700px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 28px; background: none; border: none; cursor: pointer; color: #555; }
     </style>
 </head>
 <body>
 
     <div id="navigation-bar"></div>
     <div id="page-content"></div>
+    
+    <div id="product-modal" class="modal-overlay" onclick="if(event.target===this) closeModal()">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div id="modal-body" class="flex-column" style="gap:15px; align-items:center; text-align:center;"></div>
+        </div>
+    </div>
 
     <script id="site-data" type="application/json">{"Config":[{"Module (模块)":"Defensive Type Casting\n(全局防御性数据强转)","Condition (触发条件)":"All data cells and data binding \noperations","English Specification (英文规则描述)":"The core engine must implement strict defensive type casting. Any cell value that \nevaluates to undefined or null must be automatically converted to an empty string \n\"\" before processing string methods (e.g., endsWith), preventing critical runtime type \nerrors.","Chinese Specification (中文规则对照)":"核心引擎必须实现严格的防御性类型转换。在调用任何字符串\n方法（如 endsWith）之前，任何判定为 undefined 或 null 的单元\n格数据，系统必须在底层自动强转为空字符串 \"\"，彻底杜绝运行\n时类型报错。"},{"Module (模块)":"Data Sanitization\n(数据清洗)","Condition (触发条件)":"All columns across all sheets","English Specification (英文规则描述)":"Any cell that is completely empty or filled with a hyphen (\"-\") must be treated as \n\"No Data\". The engine must completely skip these fields during rendering.","Chinese Specification (中文规则对照)":"任何完全留空或填入短横线 (\"-\") 的单元格，系统必须统一判\n定为**“无数据”**，在渲染网页时直接跳过，绝不显示。"},{"Module (模块)":"Product Data Consolidation\n(商品多行合并)","Condition (触发条件)":"Product ID multi-rows","English Specification (英文规则描述)":"If rows share the same Product ID, the gallery renders one card. However, it \ncombines all Media links across those rows into a slideshow array for the pop-up.","Chinese Specification (中文规则对照)":"如果多行数据拥有完全相同的 Product ID，画廊页只生成一\n张卡片，但详情弹窗会把这几行所有的 Media 链接打包成一\n个幻灯片轮播图数组。"},{"Module (模块)":"Media Stream Transformer","Condition (触发条件)":"All media link columns, image/video fields, and \nGoogle Drive URLs","English Specification (英文规则描述)":"The core engine implements parseMediaUrl(url): 1. Convert drive.google.com links \ninto verified official stream hosts via regex file ID extraction to bypass 403 blocks. \n2. If the media value is 'x', automatically generate a light-gray SVG placeholder to \npreserve layout","Chinese Specification (中文规则对照)":"核心引擎内置 parseMediaUrl(url)：1. 凡是包含 drive.google.com \n的链接，必须用正则抓取 33 位 ID 并重组为官方 lh3 CDN 直链绕\n过 403 拦截 ；2. 若遇到媒体字段填入单个字母 x，则自动生成轻\n量级灰色 SVG 占位图防塌陷 。"},{"Module (模块)":"SPA Hash Router Engine","Condition (触发条件)":"All page navigations, navigation link clicks, and \nURL hash changes","English Specification (英文规则描述)":"The entire site operates via Single-Page Hash Routing. Listen to the hashchange \nevent to instantly update the #page-content without reloading. Dynamically map \nhashes to their corresponding sheet names and strictly lock the current hash page \nupon browser manual refresh.","Chinese Specification (中文规则对照)":"整个系统由哈希路由驱动。监听 hashchange 事件，动态读取导\n航 Link 并无刷新映射渲染对应的同名工作表（无匹配则显示 40\n4) ；手动刷新浏览器时必须精确锁死当前哈希页面 。"},{"Module (模块)":"Persistent Navigation\n(导航栏常驻机制)","Condition (触发条件)":"Navigation sheet data","English Specification (英文规则描述)":"The Navigation bar must be rendered as a globally persistent component at the \nabsolute top of the viewport. During page switches, only the #page-content area \nshall be updated; the navigation bar must never be re-rendered or destroyed.","Chinese Specification (中文规则对照)":"导航栏必须作为全局常驻组件渲染在视口最顶部。在切换页面\n时，系统只允许刷新内容区，绝对不能重新渲染或销毁导航栏，\n避免画面闪烁。"},{"Module (模块)":"Dynamic Tab Titles\n(动态浏览器标题)","Condition (触发条件)":"Dynamic page switching","English Specification (英文规则描述)":"The browser tab title (\u003ctitle> tag) must change dynamically based on the active \npage.","Chinese Specification (中文规则对照)":"浏览器的标签页标题必须随着页面切换而动态改变。（例如：\n首页显示“首页”，产品页显示“产品中心”，联系我们页显示\n“联系我们”）。"},{"Module (模块)":"Global CSS Mapper\n(全局样式映射引擎)","Condition (触发条件)":"Parsing Global sheet columns","English Specification (英文规则描述)":"The engine must strictly map Global columns to CSS properties: Width/Height to \nwidth/height, Padding/Margin to padding/margin, Text Color to color, Font Size to \nfont-size (with px), and Border Radius to border-radius.","Chinese Specification (中文规则对照)":"引擎必须将 Global 表的参数严格转换为 CSS 属性：将 \nWidth/Height 映射为宽高，Padding/Margin 映射为内外边距，\nText Color 映射为字体颜色，Font Size 自动加上 px 单位，Border \nRadius 映射为圆角。"},{"Module (模块)":"Cascading Style Inheritance\n(样式继承)","Condition (触发条件)":"About Row* in Main sheet","English Specification (英文规则描述)":"If any section starting with About Row (e.g., About Row1) lacks an exact match \nin Global, it must strip trailing numbers and inherit About Row styles.","Chinese Specification (中文规则对照)":"以 About Row 开头的 Section（如 Row1），在 Global 里若\n找不到全名，则自动剥离末尾数字，强制继承 About Row 的\n全局样式。"},{"Module (模块)":"Item Style Inheritance\n(子元素样式智能继承)","Condition (触发条件)":"Any Section name ending with Item","English Specification (英文规则描述)":"If a section name from the data sheet ends with \"Item\" (e.g., Product Filter Menu \nItem) and lacks an exact match in Global, the engine must automatically strip the \n\"Item\" suffix and force it to inherit the base styles of its parent container (e.g., \nProduct Filter Menu).","Chinese Specification (中文规则对照)":"当数据表中的 Section 名字以 \"Item\" 结尾（如 Product Filter \nMenu Item），且在 Global 表中找不到一字不差的完美匹配时，\n核心引擎必须自动剥离末尾的 \"Item\" 单词，让其强制继承父级大\n盒子（如 Product Filter Menu）的全局样式。"},{"Module (模块)":"Intelligent Background Parser\n(背景样式智能判定)","Condition (触发条件)":"Bg Color/Pic column in Global sheet","English Specification (英文规则描述)":"The CSS compiler must dynamically parse the Bg Color/Pic column. If the value \nstarts with a URL protocol (http) or data URI (data:), render it as background-image: \nurl(...) with cover styling. Otherwise, treat it as background-color.","Chinese Specification (中文规则对照)":"CSS 编译器必须动态解析 Bg Color/Pic 这一栏。如果文字以网址\n协议（http）或数据流（data:）开头，必须将其渲染为 \nbackground-image: url(...)；否则，一律使用 background-color 作\n为纯色处理。"},{"Module (模块)":"Responsive Breakpoint\n\n(响应式断点切换)","Condition (触发条件)":"Parsing Global style columns","English Specification (英文规则描述)":"The engine must set the global responsive breakpoint at a screen width of 768px. \nFor screens wider than 768px, it must exclusively apply styles from columns \nprefixed with PC. For screens 768px or narrower, it must exclusively apply styles \nfrom columns prefixed with HP.","Chinese Specification (中文规则对照)":"引擎必须将全局响应式断点设定为屏幕宽度 768px。当屏幕宽于 \n768px 时，强制且仅读取带有 PC 前缀的样式列；当屏幕小于或等\n于 768px 时，强制且仅读取带有 HP 前缀的样式列。"},{"Module (模块)":"Responsive Fallback Chain\n\n(响应式降级回退机制)","Condition (触发条件)":"Parsing missing HP values","English Specification (英文规则描述)":"If an HP column value evaluates to \"No Data\", the engine must follow a strict \nfallback chain: 1. Search for the HP value in its parent section. 2. If the parent also \nhas \"No Data\", fallback to the element's own PC column value.","Chinese Specification (中文规则对照)":"当任何 HP 栏位为“无数据”时，引擎必须执行严谨的回退链：1. 优\n先尝试继承其父级 Section 的同名 HP 栏位值；2. 若父级 HP 亦为\n空，则最终降级采用该元素自身的 PC 栏位值。"},{"Module (模块)":"Flex Layout Engine\n(弹性排版引擎)","Condition (触发条件)":"Parsing Alignment columns","English Specification (英文规则描述)":"The engine must use CSS Flexbox. If Alignment contains flex-column, stack items \nvertically. If flex-reverse or right, reverse the visual order of text and media. If \nLayout Position is center, center the elements.","Chinese Specification (中文规则对照)":"引擎必须使用 Flexbox 布局。若 Alignment 包含 flex-column，则\n上下垂直排列；若包含 flex-reverse 或 right，强制将图片与文字\n的左右/上下顺序反转；若 Position 为 center，则居中对齐。"},{"Module (模块)":"Advanced Positioning Engine\n(高级定位引擎)","Condition (触发条件)":"Parsing Layout Position column","English Specification (英文规则描述)":"If the value contains top fixed, the engine must apply position: fixed; top: 0; left: 0; \nwidth: 100%; z-index: 1000; to the element.","Chinese Specification (中文规则对照)":"如果数值包含 top fixed，引擎必须为其生成强制固定在顶部的 \nCSS 代码，并设置最高层级防遮挡。"},{"Module (模块)":"Smart Parent-Child Wrapper\n(智能父子嵌套包装器)","Condition (触发条件)":"Parsing sequential rows with suffix","English Specification (英文规则描述)":"If consecutive rows share a base name (e.g., About Row 1, About Row 2), the \nengine must dynamically wrap them in a master container named after the base \n(About). The master container must strictly apply the base's Global styles \n(e.g., flex-column, background image). The inner rows strictly govern their own \ninternal layout (e.g., flex-row, 70% width).","Chinese Specification (中文规则对照)":"当遇到带有 Row 后缀的连续行时，引擎必须自动生成一个以其前\n缀（如 About）命名的父级大盒子将它们包裹。大盒子强制应用其\n自身的 Global 样式（垂直排布、背景图等），而内部的小盒子独立\n负责自身的长宽与图文左右排布。"},{"Module (模块)":"Alternating Split Layout\n(图文交错)","Condition (触发条件)":"About Row* in Main sheet","English Specification (英文规则描述)":"The engine enforces Layout B: Title and Content must be wrapped into a vertical \ntext-group container first, then aligned horizontally next to the Media.","Chinese Specification (中文规则对照)":"网页必须采用场景B（图文左右排）：Title 和 Content 必须先打\n包进一个垂直的隐形文案盒，整体再与 Media 图片左右并排。"},{"Module (模块)":"Product Gallery Overview\n(产品画廊列表页)","Condition (触发条件)":"Default Picture & Title","English Specification (英文规则描述)":"The main gallery page (products) must only display the Title and Default \nPicture (as thumbnail). It must never load the heavy Media or Content.","Chinese Specification (中文规则对照)":"产品主列表页（画廊区）的每张卡片只能展示 Title 和 Default \nPicture（封面图）。为了极速加载，绝对不能在此页面渲染 \nMedia 和 Content。"},{"Module (模块)":"Dynamic Product Filtering\n(动态产品筛选与联动)","Condition (触发条件)":"Clicking Product Filter Menu Item","English Specification (英文规则描述)":"1. No Reload: Instantly filter Product Filter Content Items on the client-side without \n   page refresh.\n2. Data Matching: Strictly match the menu's identifier with the content's \n    Category / Tag.\n3. Show All: A designated \"All\" (全部) menu must bypass filtering and display all \n    items.\n4. Active State: The clicked menu item must visually reflect an \"active/selected\" \n    styling state to the user.","Chinese Specification (中文规则对照)":"1. 无刷新拦截：在客户端瞬间过滤右侧的产品卡片，绝对禁止页面\n    刷新。\n2. 精准匹配：严格将所点菜单的标识符与产品表中的 \n    Category / Tag 字段进行比对。\n3. 全局展示：遇到特殊的“全部”菜单时，豁免过滤机制，展示所有\n     产品。\n4. 激活状态：被点击的菜单项必须在视觉上切换为“已选中/高亮”\n    状态，以提示用户当前位置。"},{"Module (模块)":"Product Detail Page Assets\n(产品详情页内容)","Condition (触发条件)":"Content & Media in Product sheet","English Specification (英文规则描述)":"The Content and Media columns belong exclusively to the Product ID detail \npop-up. The engine must render them only inside the pop-up modal.","Chinese Specification (中文规则对照)":"Content（详述）和 Media（多媒体）是小分页详情弹\n窗的专属资产。引擎只有在用户点击卡片触发弹窗时，\n才允许把它们渲染在弹窗内部。"},{"Module (模块)":"Product Detail Pop-up\n(详情局部弹窗)","Condition (触发条件)":"Clicking valid product cards","English Specification (英文规则描述)":"Clicking a card with a valid Product ID (excluding \"-\") must trigger a custom \nmodal overlay styled according to the Product ID specs in the Global sheet.","Chinese Specification (中文规则对照)":"当用户点击带有真实 Product ID 的商品卡片时，在当前页直\n接弹出一个局部覆盖的高定详情弹窗，其样式完全套用 Global \n中 Product ID 的设定。"},{"Module (模块)":"Carousel State Control\n(智能视频轮播联动)","Condition (触发条件)":"Multimedia slider in pop-up","English Specification (英文规则描述)":"The carousel must pause instantly when a video plays. When the video ends, the \nsystem must wait for 3 seconds before automatically resuming the carousel \nrotation.","Chinese Specification (中文规则对照)":"详情页轮播图如果播放到视频，用户点击播放时轮播必须立刻\n暂停；视频播放结束（On Ended）后，强制等待 3 秒钟，随\n后自动恢复轮播。"},{"Module (模块)":"Form Element Mapping\n(表单元素变身映射)","Condition (触发条件)":"Feedback Form","English Specification (英文规则描述)":"If Button is empty and Media is \"-\" (or empty), render it as a static header text \nblock (\u003ch1> and \u003cp>) at the top of the form. If Media contains an input type \n(e.g., text, email), map it to an HTML \u003cinput> or \u003ctextarea> where Title is the label \nand Content is the placeholder.","Chinese Specification (中文规则对照)":"当遇到名为 Feedback Form 的 Section 时：如果 Button 为空\n且 Media 填的是 \"-\"（或留空），必须将其渲染为表单顶部的静\n态大标题与副标题文本块；如果 Media 填的是具体的输入类型\n（如 text），才将其转化为打字输入框组件。"},{"Module (模块)":"Form Submission\n(表单提交响应)","Condition (触发条件)":"Feedback Form","English Specification (英文规则描述)":"When the Submit button is clicked, the engine must intercept the event, collect all \ninput values, and send a POST request to the Apps Script API. The data must be \nautomatically appended as a new row in a spreadsheet tab named Feedback.","Chinese Specification (中文规则对照)":"当用户点击提交按钮时，前端引擎必须拦截该事件，自动收集所\n有输入框的内容，并通过 POST 请求异步发送给 Apps Script 后\n端 API。数据需自动追加到名为 Feedback 的新表格行中。"},{"Module (模块)":"Custom logic override\n(动态逻辑兜底)","Condition (触发条件)":"Non-style logic issues","English Specification (英文规则描述)":"Any behavioral, data-processing, or interactive logic requirements that cannot \nbe defined via CSS properties in the Global sheet must be declared here to guide \nApps Script core engine development.","Chinese Specification (中文规则对照)":"任何无法通过 Global 表中的 CSS 样式属性解决的交互、数据\n处理或底层逻辑需求，必须统一在此表声明，用以指导 \nApps Script 核心引擎的代码编写。"}],"Global":[{"Sheet (Tab) / Page":"Navigation","Section":"No Data","Subsection":"No Data","PC Font Size":"16","Font Weight":"Bold","Text Color":"#4285f4","Bg Color/Pic":"#fff2cc","Bg Effect":"No Data","PC Width":"1","PC Height":"65px","PC Padding":"0 50px","PC Margin":"No Data","PC Alignment":"space-between","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"top fixed","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"auto","HP Padding":"0 20px","HP Margin":"No Data","HP Alignment":"space-between"},{"Sheet (Tab) / Page":"Navigation","Section":"Navigation Item","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"0 20px","PC Alignment":"left","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"left"},{"Sheet (Tab) / Page":"Navigation","Section":"Navigation Right","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"0 20px","PC Alignment":"right","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"right"},{"Sheet (Tab) / Page":"Main","Section":"Hero","Subsection":"Media","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"1","PC Height":"400px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"3000","HP Font Size":"No Data","HP Width":"1","HP Height":"auto","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Main","Section":"About","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"https://drive.google.com/file/d/1xVPjU0Gjjjl3m857KievH1RlOqTsre2T/view?usp=sharing","Bg Effect":"faint","PC Width":"1","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-column","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-column"},{"Sheet (Tab) / Page":"Main","Section":"About Row","Subsection":"No Data","PC Font Size":"28","Font Weight":"No Data","Text Color":"#0000ff","Bg Color/Pic":"#ffe0e0","Bg Effect":"No Data","PC Width":"0.7","PC Height":"No Data","PC Padding":"50px","PC Margin":"50px","PC Alignment":"flex-row","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"14px","HP Width":"0.9","HP Height":"No Data","HP Padding":"20px","HP Margin":"20px","HP Alignment":"flex-row"},{"Sheet (Tab) / Page":"Main","Section":"About Row","Subsection":"Content","PC Font Size":"16","Font Weight":"No Data","Text Color":"#9fc5e8","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"12px","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Main","Section":"About Row","Subsection":"Media","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"200px","PC Height":"200px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"8px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"100px","HP Height":"100px","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Main","Section":"About Row2","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#eeefba","Bg Color/Pic":"#fcffdc","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-reverse","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"right","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-reverse"},{"Sheet (Tab) / Page":"Main","Section":"Footer","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#3d85c6","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"#ffffff","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-row","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"No Data","HP Padding":"20px","HP Margin":"No Data","HP Alignment":"flex-column"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter Menu","Subsection":"No Data","PC Font Size":"24","Font Weight":"Normal","Text Color":"#84bfb6","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"0.3","PC Height":"No Data","PC Padding":"50px","PC Margin":"No Data","PC Alignment":"flex-column","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"fixed","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-row-wrap"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter Content","Subsection":"No Data","PC Font Size":"18","Font Weight":"Normal","Text Color":"#a95ea9","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"0.7","PC Height":"No Data","PC Padding":"50px","PC Margin":"No Data","PC Alignment":"flex-row-wrap","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-row-wrap"},{"Sheet (Tab) / Page":"Products","Section":"Product Filter Content","Subsection":"Default Picture","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"200px","PC Height":"200px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"8px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"100px","HP Height":"100px","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Products","Section":"Product ID","Subsection":"Section","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"#f4e0ae","Bg Effect":"No Data","PC Width":"1","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-row-wrap","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"2000","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"20px","HP Margin":"50px","HP Alignment":"flex-row-center"},{"Sheet (Tab) / Page":"Products","Section":"Product ID","Subsection":"Content","PC Font Size":"16","Font Weight":"Normal","Text Color":"#000000","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"20px","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"6px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Products","Section":"Product ID","Subsection":"Media","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"#b6d7a8","Bg Effect":"No Data","PC Width":"200px","PC Height":"200px","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"8px","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"150px","HP Height":"150px","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Contact","Section":"Contact Container","Subsection":"No Data","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"#000000","Bg Color/Pic":"https://drive.google.com/file/d/1z5OIt8p8fp90X2PfOa0lfBANp0AEb4ry/view?usp=sharing","Bg Effect":"dim","PC Width":"1","PC Height":"100vh","PC Padding":"No Data","PC Margin":"0","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"left","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Contact","Section":"Contact Item","Subsection":"No Data","PC Font Size":"16","Font Weight":"Normal","Text Color":"#a95ea9","Bg Color/Pic":"#ead1dc","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"0 60px 0 60px","PC Alignment":"flex-column","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"left","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"20px","HP Margin":"40px","HP Alignment":"left"},{"Sheet (Tab) / Page":"Contact","Section":"Contact Item","Subsection":"Title","PC Font Size":"No Data","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"120px","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"},{"Sheet (Tab) / Page":"Contact","Section":"Feedback Item","Subsection":"No Data","PC Font Size":"28","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"0.7","PC Height":"No Data","PC Padding":"50px","PC Margin":"No Data","PC Alignment":"center","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"center","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"center"},{"Sheet (Tab) / Page":"Contact","Section":"Feedback Form","Subsection":"No Data","PC Font Size":"16","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"0.7","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"flex-column","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"left","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"1","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"flex-column"},{"Sheet (Tab) / Page":"Contact","Section":"Feedback Form","Subsection":"Title","PC Font Size":"18","Font Weight":"No Data","Text Color":"No Data","Bg Color/Pic":"No Data","Bg Effect":"No Data","PC Width":"No Data","PC Height":"No Data","PC Padding":"No Data","PC Margin":"No Data","PC Alignment":"No Data","Border Radius":"No Data","Section Effect":"No Data","Layout Position":"No Data","Interval (ms)":"No Data","HP Font Size":"No Data","HP Width":"No Data","HP Height":"No Data","HP Padding":"No Data","HP Margin":"No Data","HP Alignment":"No Data"}],"Navigation":[{"Section":"Navigation Item","Title":"首页","Page Link":"Main"},{"Section":"Navigation Item","Title":"产品","Page Link":"Products"},{"Section":"Navigation Item","Title":"联系我们","Page Link":"Contact"},{"Section":"Navigation Right","Title":"中/EN","Page Link":"x"}],"Main":[{"Section":"Hero","Title":"No Data","Content":"No Data","Media":"https://drive.google.com/file/d/1W0jwIsEN1FEyY2Sib9qkxWONlTMn32RC/view?usp=sharing","Button":"No Data"},{"Section":"About Row1","Title":"你想要拥有自己的网页吗？","Content":"在这里你可以选择你想要的风格，我们可以帮你完成所有步骤。","Media":"x","Button":"No Data"},{"Section":"About Row2","Title":"你想要拥有自己的视频吗？","Content":"在这里我们可以为你提供你想要的视频，只要提供你的构想。","Media":"x","Button":"No Data"},{"Section":"About Row3","Title":"你想要拥有自己的游戏吗？","Content":"在这里我们可以为你设计出由你提供的构想而成的游戏。","Media":"x","Button":"No Data"},{"Section":"Footer","Title":"谢谢光临","Content":"No Data","Media":"No Data","Button":"No Data"}],"Products":[{"Section":"Product Filter Menu Item","Title":"全部","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Menu Item","Title":"网页","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Menu Item","Title":"视频","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Menu Item","Title":"游戏","Category / Tag":"No Data","Default Picture":"No Data","Product ID":"No Data","Content":"No Data","Media":"No Data"},{"Section":"Product Filter Content Item","Title":"blog风格","Category / Tag":"网页","Default Picture":"x","Product ID":"item001","Content":"这个blog风","Media":"x"},{"Section":"Product Filter Content Item","Title":"产品风格","Category / Tag":"网页","Default Picture":"x","Product ID":"item002","Content":"这可以看各种产品","Media":"x"},{"Section":"Product Filter Content Item","Title":"商业风格","Category / Tag":"视频","Default Picture":"x","Product ID":"item003","Content":"这是商业风","Media":"x"},{"Section":"Product Filter Content Item","Title":"自创构思","Category / Tag":"视频","Default Picture":"x","Product ID":"item004","Content":"你给我故事，我帮你转换成视频","Media":"x"},{"Section":"Product Filter Content Item","Title":"纪念视频","Category / Tag":"视频","Default Picture":"x","Product ID":"item005","Content":"你给我照片，我帮你转换成视频","Media":"x"},{"Section":"Product Filter Content Item","Title":"回忆构思","Category / Tag":"视频","Default Picture":"x","Product ID":"item006","Content":"你给我回忆故事与照片，我帮你转换成照片","Media":"x"},{"Section":"Product Filter Content Item","Title":"冒险","Category / Tag":"游戏","Default Picture":"x","Product ID":"item007","Content":"冒险风","Media":"x"},{"Section":"Product Filter Content Item","Title":"卡牌","Category / Tag":"游戏","Default Picture":"x","Product ID":"item008","Content":"卡牌风","Media":"x"},{"Section":"Product Filter Content Item","Title":"建造","Category / Tag":"游戏","Default Picture":"x","Product ID":"item009","Content":"建造风","Media":"x"},{"Section":"Product Filter Content Item","Title":"自定义","Category / Tag":"网页","Default Picture":"x","Product ID":"item010","Content":"自己设计你想要的网页页面吧","Media":"x"},{"Section":"Product Filter Content Item","Title":"模仿","Category / Tag":"网页","Default Picture":"x","Product ID":"item011","Content":"你给我链接，我帮你换成它的格局","Media":"x"}],"Contact":[{"Section":"Contact Item","Title":"Email","Content":": xxxx@xxx.xxx","Media":"No Data","Button":"No Data"},{"Section":"Contact Item","Title":"Whatsapp","Content":": xxx-xxxxxx","Media":"No Data","Button":"No Data"},{"Section":"Feedback Item","Title":"Feedback","Content":"No Data","Media":"No Data","Button":"No Data"},{"Section":"Feedback Form","Title":"Name","Content":"Your Name","Media":"text","Button":"No Data"},{"Section":"Feedback Form","Title":"Email","Content":"Your Email","Media":"email","Button":"No Data"},{"Section":"Feedback Form","Title":"Description","Content":"Description","Media":"textarea","Button":"No Data"},{"Section":"Feedback Form","Title":"No Data","Content":"No Data","Media":"No Data","Button":"Submit"}]}</script>
 
@@ -34,21 +46,25 @@
         var DB = JSON.parse(document.getElementById('site-data').textContent);
         var WEB_APP_URL = "";
 
+        // 🌟 【问题1修复】支持多维数值解析 (例: "10px 20px" 或 "0.05 0.1")
         function parseUnit(val) {
             if (!val || val === "No Data") return "";
-            var s = val.toString().trim();
-            if (!isNaN(s)) {
-                var num = parseFloat(s);
-                if (num > 0 && num <= 1) return (num * 100) + "%"; 
-                return num + "px"; 
-            }
-            return s;
+            var parts = val.toString().trim().split(/\s+/); 
+            var parsedParts = parts.map(function(s) {
+                if (/[a-zA-Z%]$/.test(s)) return s; 
+                if (!isNaN(s) && s !== "") {
+                    var num = parseFloat(s);
+                    if (num > 0 && num <= 1) return (num * 100) + "%"; 
+                    if (num === 0) return "0px";
+                    return num + "px"; 
+                }
+                return s;
+            });
+            return parsedParts.join(" ");
         }
 
         function parseMediaUrl(url) {
-            var svgHolder = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'>" +
-                            "<rect width='100' height='100' fill='%23eee'/>" +
-                            "<text x='50%' y='50%' font-size='12' font-family='sans-serif' text-anchor='middle' fill='%23aaa' dy='.3em'>No Image</text></svg>";
+            var svgHolder = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23eee'/><text x='50%' y='50%' font-size='12' font-family='sans-serif' text-anchor='middle' fill='%23aaa' dy='.3em'>No Image</text></svg>";
             if (!url || url === "No Data" || url === "x") return svgHolder;
             if (url.indexOf("drive.google.com") > -1) {
                 try { return "https://ieee-ies.org/images/files/technical-committees/tc-hsi/picture.php?id=" + url.split("/d/")[1].split("/")[0]; } catch(e) {
@@ -87,12 +103,14 @@
                 if (row['Font Weight'] && row['Font Weight'] !== "No Data") cssText += "  font-weight: " + row['Font Weight'] + " !important;\n";
                 if (row['Text Color'] && row['Text Color'] !== "No Data") cssText += "  color: " + row['Text Color'] + " !important;\n";
                 
+                // 🌟 【问题2修复】放宽背景图片正则验证，确保背景正常渲染
                 if (row['Bg Color/Pic'] && row['Bg Color/Pic'] !== "No Data") {
-                    var bg = row['Bg Color/Pic'];
-                    if (bg.indexOf("http") === 0 || bg.indexOf("drive.") > -1) {
+                    var bg = row['Bg Color/Pic'].toString().trim();
+                    if (bg.indexOf("http") === 0 || bg.indexOf("data:image") === 0 || bg.indexOf("drive.") > -1 || bg.indexOf(".jpg") > -1 || bg.indexOf(".png") > -1) {
                         cssText += "  background-image: url('" + parseMediaUrl(bg) + "') !important;\n";
                         cssText += "  background-size: cover !important;\n";
                         cssText += "  background-position: center !important;\n";
+                        cssText += "  background-repeat: no-repeat !important;\n";
                     } else {
                         cssText += "  background-color: " + bg + " !important;\n";
                     }
@@ -107,6 +125,7 @@
                 if (row['Layout Position'] === "top fixed") {
                     cssText += "  position: fixed !important; top: 0 !important; ";
                     cssText += "left: 0 !important; right: 0 !important; z-index: 9999 !important;\n";
+                    document.body.style.paddingTop = "70px"; // 动态避让导航栏
                 }
                 cssText += "}\n";
             });
@@ -130,6 +149,23 @@
             return classes.join(" ");
         }
 
+        // 🌟 【问题3修复】弹窗逻辑
+        function openModal(pid) {
+            var pData = DB.Product || DB.Products;
+            var details = pData.filter(function(r) { return r['Product ID'] == pid; });
+            var html = "";
+            details.forEach(function(d) {
+                if (d.Title && d.Title !== "No Data" && d.Section === "Product Filter Content Item") html += "<h2 style='margin-bottom:10px; color:#333;'>" + d.Title + "</h2>";
+                if(d.Media && d.Media !== "No Data" && d.Media !== "x") {
+                    html += '<img src="' + parseMediaUrl(d.Media) + '" style="max-width:100%; border-radius:8px; margin:15px 0;">';
+                }
+                if (d.Content && d.Content !== "No Data") html += "<p style='color:#666; line-height:1.6; text-align:left; width:100%;'>" + d.Content + "</p>";
+            });
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('product-modal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('product-modal').style.display = 'none'; }
+
         function renderPage() {
             var hash = window.location.hash.substring(1).toLowerCase() || "main";
             var contentDiv = document.getElementById("page-content");
@@ -148,7 +184,6 @@
                 
                 menus.forEach(function(m, i) {
                     var activeCls = i === 0 ? "active" : "";
-                    // 🌟 终极防御：改用 data-title，告别一切单双引号语法断裂问题
                     var safeTitle = m.Title ? m.Title.toString().replace(/"/g, "&quot;") : "";
                     menuHtml += '<div class="filter-menu-item ' + activeCls + '" ';
                     menuHtml += 'data-title="' + safeTitle + '" ';
@@ -162,10 +197,10 @@
                 
                 productData.filter(function(r) { return r.Section === "Product Filter Content Item"; }).forEach(function(item) {
                     var imgCss = 'width:100%; height:180px; object-fit:cover; border-radius:6px; margin-bottom:10px;';
-                    gridHtml += '<div class="product-card flex-column" data-category="' + item['Category / Tag'] + '">';
+                    gridHtml += '<div class="product-card flex-column" data-category="' + item['Category / Tag'] + '" onclick="openModal(\'' + item['Product ID'] + '\')">';
                     gridHtml += '  <img src="' + parseMediaUrl(item.Media || item['Default Picture']) + '" style="' + imgCss + '">';
                     gridHtml += '  <h3 style="font-size:18px; margin-bottom:5px;">' + item.Title + '</h3>';
-                    gridHtml += '  <p style="color:#666; font-size:14px; flex:1;">' + (item.Content !== "No Data" ? item.Content : "") + '</p>';
+                    gridHtml += '  <p style="color:#666; font-size:14px; flex:1;">点击查看详情</p>';
                     gridHtml += '</div>';
                 });
                 gridHtml += '</div>';
@@ -175,7 +210,7 @@
                 return;
             }
 
-            // 2. 联系我们拦截
+            // 2. 联系我们拦截 (🌟 【问题4、5修复】靠左对齐与 Feedback Item 识别)
             if (hash.indexOf("contact") > -1 && DB.Contact && DB.Contact.length > 0) {
                 document.title = "联系我们";
                 var wrapRules = getStyleRule("Contact Container") || getStyleRule("Contact");
@@ -184,44 +219,51 @@
                 html += '  <div class="seamless-container" style="max-width:600px;">';
                 
                 var formHtml = "";
+                var isFormOpened = false;
+                
                 DB.Contact.forEach(function(row) {
                     var rRule = getStyleRule(row.Section);
                     var cls = rRule ? rRule._compiledClass : "generic-card";
                     
                     if (row.Section === "Contact Item") {
-                        var cCss = 'padding:15px; background:white; border-bottom:1px solid #eee; width:100%; justify-content:space-between;';
+                        // 改为靠左且紧凑
+                        var cCss = 'padding:10px 0; border-bottom:1px solid #eee; width:100%; justify-content:flex-start; gap:10px; text-align:left; align-items:flex-start;';
                         html += '<div class="' + cls + ' flex-row" style="' + cCss + '">';
-                        html += '  <strong>' + row.Title + '</strong><span>' + row.Content + '</span></div>';
+                        html += '  <strong style="min-width:90px;">' + row.Title + '</strong><span style="flex:1;">' + row.Content + '</span></div>';
                     }
-                    if (row.Section === "Feedback") {
-                        formHtml += '<h2 class="' + cls + '" style="margin-top:30px; margin-bottom:15px;">' + row.Title + '</h2>';
-                        var fCss = 'background:white; padding:25px; border-radius:8px; border:1px solid #eee; width:100%; gap:15px;';
-                        formHtml += '<form onsubmit="handleForm(event)" class="flex-column" style="' + fCss + '">';
+                    if (row.Section === "Feedback Item" || row.Section === "Feedback") {
+                        // 独立标题居中
+                        html += '<h2 class="' + cls + '" style="margin-top:30px; margin-bottom:10px; text-align:center; width:100%;">' + row.Title + '</h2>';
                     }
                     if (row.Section === "Feedback Form") {
+                        if (!isFormOpened) {
+                            var fCss = 'background:white; padding:25px; border-radius:8px; border:1px solid #eee; width:100%; gap:15px; margin-top:15px;';
+                            formHtml += '<form onsubmit="handleForm(event)" class="flex-column" style="' + fCss + '">';
+                            isFormOpened = true;
+                        }
                         if (row.Button && row.Button !== "No Data") {
-                            var bCss = 'background:#4285f4; color:white; border:none; padding:12px; border-radius:6px; cursor:pointer; font-weight:bold;';
+                            var bCss = 'background:#4285f4; color:white; border:none; padding:12px; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:10px;';
                             formHtml += '<button type="submit" style="' + bCss + '">' + row.Button + '</button>';
                         } else {
-                            formHtml += '<div class="flex-column" style="gap:5px;"><label style="font-weight:500;">' + row.Title + '</label>';
+                            formHtml += '<div class="flex-column" style="gap:5px; text-align:left;"><label style="font-weight:500;">' + row.Title + '</label>';
                             if(row.Media === "textarea") {
-                                var tCss = 'padding:10px; border:1px solid #ccc; border-radius:4px; height:80px; resize:none;';
-                                formHtml += '<textarea name="' + row.Title + '" placeholder="' + row.Content + '" style="' + tCss + '"></textarea>';
+                                var tCss = 'padding:10px; border:1px solid #ccc; border-radius:4px; height:80px; resize:none; width:100%;';
+                                formHtml += '<textarea name="' + row.Title + '" placeholder="' + row.Content + '" style="' + tCss + '" required></textarea>';
                             } else {
-                                var iCss = 'padding:10px; border:1px solid #ccc; border-radius:4px;';
-                                formHtml += '<input type="' + (row.Media || "text") + '" name="' + row.Title + '" placeholder="' + row.Content + '" style="' + iCss + '">';
+                                var iCss = 'padding:10px; border:1px solid #ccc; border-radius:4px; width:100%;';
+                                formHtml += '<input type="' + (row.Media || "text") + '" name="' + row.Title + '" placeholder="' + row.Content + '" style="' + iCss + '" required>';
                             }
                             formHtml += '</div>';
                         }
                     }
                 });
                 
-                if (formHtml) formHtml += '</form>';
+                if (isFormOpened) formHtml += '</form>';
                 contentDiv.innerHTML = html + "</div>" + formHtml + '</div>';
                 return;
             }
 
-            // 3. 通用页面渲染
+            // 3. 通用页面渲染 (🌟 修复 Hero 顶部大图加载)
             var targetKey = Object.keys(DB).find(function(k) { return k.toLowerCase() === hash.toLowerCase(); }) || "Main";
             document.title = targetKey;
             
@@ -235,16 +277,16 @@
                 var cls = rRule ? rRule._compiledClass : "";
                 
                 if (row.Section.indexOf("Row") > -1) {
-                    var rCss = 'background:white; border:1px solid #eee; border-radius:8px; padding:20px; margin:15px 0; box-shadow:0 2px 8px rgba(0,0,0,0.02);';
+                    var rCss = 'background:white; border:1px solid #eee; border-radius:8px; padding:20px; margin:15px 0; box-shadow:0 2px 8px rgba(0,0,0,0.02); text-align:left;';
                     html += '<div class="' + cls + ' flex-column" style="' + rCss + '">';
                     if (row.Title !== "No Data") html += '<h2>' + row.Title + '</h2>';
                     if (row.Content !== "No Data") html += '<p style="color:#555; margin-top:10px;">' + row.Content + '</p>';
                     if (row.Media && row.Media !== "No Data" && row.Media !== "x") {
-                        html += '<img src="' + parseMediaUrl(row.Media) + '" style="max-width:100%; border-radius:4px; margin-top:10px;">';
+                        html += '<img src="' + parseMediaUrl(row.Media) + '" style="max-width:100%; border-radius:4px; margin-top:15px;">';
                     }
                     html += '</div>';
                 } else if (row.Section === "Hero") {
-                    var hCss = 'width:100%; position:relative; overflow:hidden;';
+                    var hCss = 'width:100%; position:relative; overflow:hidden; min-height:200px; display:flex;';
                     html += '<div class="' + cls + '" style="' + hCss + '">';
                     html += '  <img src="' + parseMediaUrl(row.Media) + '" style="width:100%; height:100%; object-fit:cover;">';
                     html += '</div>';
@@ -260,7 +302,7 @@
             document.querySelectorAll('.filter-menu-item').forEach(function(b) { b.classList.remove('active'); });
             btn.classList.add('active');
             document.querySelectorAll('.product-card').forEach(function(card) {
-                if (cat === "全部" || card.getAttribute('data-category') === cat) card.style.display = "block";
+                if (cat === "全部" || card.getAttribute('data-category') === cat) card.style.display = "flex";
                 else card.style.display = "none";
             });
         }
@@ -270,14 +312,14 @@
             var fd = new FormData(e.target);
             var data = Object.fromEntries(fd.entries());
             var btn = e.target.querySelector("button[type='submit']");
-            btn.disabled = true; btn.innerText = "投递中...";
+            btn.disabled = true; btn.innerText = "发送邮件中...";
             try {
                 var res = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(data), headers: { "Content-Type": "text/plain" } });
                 var r = await res.json();
-                if(r.status === "success") { alert("留言发送成功！"); e.target.reset(); }
-                else { alert("发送失败: " + r.message); }
-            } catch(err) { alert("同步成功！(由于网关策略，数据已在后台写入Sheet)"); e.target.reset(); }
-            btn.disabled = false; btn.innerText = "Submit";
+                if(r.status === "success") { alert("✅ " + r.message); e.target.reset(); }
+                else { alert("❌ 发送失败: " + r.message); }
+            } catch(err) { alert("⚠️ 网络问题，提交异常。"); }
+            btn.disabled = false; btn.innerText = "重新发送";
         }
 
         function initNavigation() {
