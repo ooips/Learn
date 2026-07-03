@@ -176,7 +176,12 @@
                 var menus = productData.filter(function(r) { return r.Section === "Product Filter Menu Item"; });
                 menus.forEach(function(m, i) {
                     var activeCls = i === 0 ? "active" : "";
-                    menuHtml += '<div class="filter-menu-item ' + activeCls + '" onclick="filterProducts(this, '' + m.Title + '')">' + m.Title + '</div>';
+                    
+                    // 🌟 终极防御：把表格标题里的单引号和回车换行符统统清洗掉，防止语法断裂
+                    var safeTitle = m.Title ? m.Title.toString().replace(/'/g, "\'").replace(/
+/g, "").replace(//g, "") : "";
+                    
+                    menuHtml += '<div class="filter-menu-item ' + activeCls + '" onclick="filterProducts(this, '' + safeTitle + '')">' + m.Title + '</div>';
                 });
                 menuHtml += '</div>';
                 
