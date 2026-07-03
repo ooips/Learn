@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Showcase SPA</title>
     <style>
-        /* 物理层基础重置 */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-        
-        /* 🌟 【问题1修复】因为导航栏被固定置顶了，给网页整体内容顶部加上 70px 内边距，防止内容被遮挡 */
         body { background-color: #fafafa; padding-top: 70px; } 
-        
         .flex-container { display: flex; }
         .flex-row { display: flex; flex-direction: row; align-items: center; }
         .flex-column { display: flex; flex-direction: column; }
@@ -18,14 +14,12 @@
         .flex-column-reverse { display: flex; flex-direction: column-reverse; }
         .flex-row-reverse { display: flex; flex-direction: row-reverse; align-items: center; }
         
-        /* 🌟 【问题5修复】无缝容器样式：强制让里面的 Contact Item 盒子边距归零，实现连着下去没有缝隙 */
         .seamless-container { display: flex; flex-direction: column; gap: 0 !important; width: 100%; }
         .seamless-container > * { margin: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
         
-        /* 通用样式 */
         .filter-menu-item { padding: 12px 20px; cursor: pointer; transition: all 0.3s; border-radius: 6px; margin-bottom: 5px; font-weight: 500; }
         .filter-menu-item.active { background-color: #4285f4 !important; color: white !important; }
-        .product-card { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; background: white; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin: 10px; width: calc(33.33% - 20px); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .product-card { cursor: pointer; transition: transform 0.2s; background: white; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin: 10px; width: calc(33.33% - 20px); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
     </style>
 </head>
@@ -40,20 +34,22 @@
         var DB = JSON.parse(document.getElementById('site-data').textContent);
         var WEB_APP_URL = "";
 
-        // 🌟 【工程核心扩展】智能化处理 Excel 数值单位转换函数 (自动抓取 0.7 转为 70%)
         function parseUnit(val) {
             if (!val || val === "No Data") return "";
             var s = val.toString().trim();
             if (!isNaN(s)) {
                 var num = parseFloat(s);
-                if (num > 0 && num <= 1) return (num * 100) + "%"; // 0.7 -> 70%
-                return num + "px"; // 50 -> 50px
+                if (num > 0 && num <= 1) return (num * 100) + "%"; 
+                return num + "px"; 
             }
             return s;
         }
 
         function parseMediaUrl(url) {
-            if (!url || url === "No Data" || url === "x") return "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23eee'/><text x='50%' y='50%' font-size='12' font-family='sans-serif' text-anchor='middle' fill='%23aaa' dy='.3em'>No Image</text></svg>";
+            var svgHolder = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'>" +
+                            "<rect width='100' height='100' fill='%23eee'/>" +
+                            "<text x='50%' y='50%' font-size='12' font-family='sans-serif' text-anchor='middle' fill='%23aaa' dy='.3em'>No Image</text></svg>";
+            if (!url || url === "No Data" || url === "x") return svgHolder;
             if (url.indexOf("drive.google.com") > -1) {
                 try { return "https://ieee-ies.org/images/files/technical-committees/tc-hsi/picture.php?id=" + url.split("/d/")[1].split("/")[0]; } catch(e) {
                 try { return "https://docs.google.com/uc?export=view&id=" + url.split("id=")[1].split("&")[0]; } catch(err) { return url; } }
@@ -64,78 +60,56 @@
         function getStyleRule(sectionName) {
             var rule = DB.Global.find(function(r) { return r.Section === sectionName; });
             if (rule) return rule;
-            // 样式回退继承链
             if (sectionName.indexOf(" Row") > -1) {
-                var parentName = sectionName.replace(/ Row( d+)?$/, "");
+                var parentName = sectionName.replace(/ Row(\ \d+)?$/, "");
                 return DB.Global.find(function(r) { return r.Section === parentName; });
             }
             return null;
         }
 
-        // 🌟 动态编译注入 CSS 核心（全量升级支持物理单位强制转换）
         function compileDynamicCSS() {
             var styleTag = document.createElement("style");
             var cssText = "";
             
             DB.Global.forEach(function(row, idx) {
                 var className = "dyn-style-" + idx;
-                row._compiledClass = className; // 绑定回写
-                
+                row._compiledClass = className; 
                 var isMobile = window.innerWidth <= 768;
                 
-                // 动态提取与降级回退
                 var fSize = parseUnit(isMobile ? (row['HP Font Size'] !== "No Data" ? row['HP Font Size'] : row['PC Font Size']) : row['PC Font Size']);
                 var width = parseUnit(isMobile ? (row['HP Width'] !== "No Data" ? row['HP Width'] : row['PC Width']) : row['PC Width']);
                 var height = parseUnit(isMobile ? (row['HP Height'] !== "No Data" ? row['HP Height'] : row['PC Height']) : row['PC Height']);
                 var padding = isMobile ? (row['HP Padding'] !== "No Data" ? row['HP Padding'] : row['PC Padding']) : row['PC Padding'];
                 var margin = isMobile ? (row['HP Margin'] !== "No Data" ? row['HP Margin'] : row['PC Margin']) : row['PC Margin'];
                 
-                cssText += "." + className + "
-";
-                if (fSize) cssText += " font-size: " + fSize + "!important;
-";
-                if (row['Font Weight'] && row['Font Weight'] !== "No Data") cssText += "  font-weight: " + row['Font Weight'] + " !important;
-";
-                if (row['Text Color'] && row['Text Color'] !== "No Data") cssText += "  color: " + row['Text Color'] + " !important;
-";
+                cssText += "." + className + " {\n";
+                if (fSize) cssText += "  font-size: " + fSize + " !important;\n";
+                if (row['Font Weight'] && row['Font Weight'] !== "No Data") cssText += "  font-weight: " + row['Font Weight'] + " !important;\n";
+                if (row['Text Color'] && row['Text Color'] !== "No Data") cssText += "  color: " + row['Text Color'] + " !important;\n";
                 
-                // 背景智能判定
                 if (row['Bg Color/Pic'] && row['Bg Color/Pic'] !== "No Data") {
                     var bg = row['Bg Color/Pic'];
                     if (bg.indexOf("http") === 0 || bg.indexOf("drive.") > -1) {
-                        cssText += "  background-image: url('" + parseMediaUrl(bg) + "') !important;
-";
-                        cssText += "  background-size: cover !important;
-";
-                        cssText += "  background-position: center !important;
-";
+                        cssText += "  background-image: url('" + parseMediaUrl(bg) + "') !important;\n";
+                        cssText += "  background-size: cover !important;\n";
+                        cssText += "  background-position: center !important;\n";
                     } else {
-                        cssText += "  background-color: " + bg + " !important;
-";
+                        cssText += "  background-color: " + bg + " !important;\n";
                     }
                 }
                 
-                if (width) cssText += "  width: " + width + " !important;
-";
-                if (height) cssText += "  height: " + height + " !important;
-";
-                if (padding && padding !== "No Data") cssText += "  padding: " + padding + " !important;
-";
-                if (margin && margin !== "No Data") cssText += "  margin: " + margin + " !important;
-";
-                if (row['Border Radius'] && row['Border Radius'] !== "No Data") cssText += "  border-radius: " + parseUnit(row['Border Radius']) + " !important;
-";
+                if (width) cssText += "  width: " + width + " !important;\n";
+                if (height) cssText += "  height: " + height + " !important;\n";
+                if (padding && padding !== "No Data") cssText += "  padding: " + padding + " !important;\n";
+                if (margin && margin !== "No Data") cssText += "  margin: " + margin + " !important;\n";
+                if (row['Border Radius'] && row['Border Radius'] !== "No Data") cssText += "  border-radius: " + parseUnit(row['Border Radius']) + " !important;\n";
                 
-                // 🌟 【问题1修复】最高优先级定位解析器
                 if (row['Layout Position'] === "top fixed") {
-                    cssText += "  position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 9999 !important;
-";
+                    cssText += "  position: fixed !important; top: 0 !important; ";
+                    cssText += "left: 0 !important; right: 0 !important; z-index: 9999 !important;\n";
                 }
-                
-                cssText += "}
-";
+                cssText += "}\n";
             });
-            
             styleTag.innerHTML = cssText;
             document.head.appendChild(styleTag);
         }
@@ -156,16 +130,13 @@
             return classes.join(" ");
         }
 
-        // 🌟 核心页面路由器分发（完美修好 Products 无法展现问题）
         function renderPage() {
             var hash = window.location.hash.substring(1).toLowerCase() || "main";
             var contentDiv = document.getElementById("page-content");
             contentDiv.innerHTML = "";
-            
-            // 🌟 【问题3修复】双向兼容单数 Product 和复数 Products 表名
             var productData = DB.Product || DB.Products;
 
-            // 1. 产品特化拦截
+            // 1. 产品页面拦截
             if (hash.indexOf("product") > -1 && productData && productData.length > 0) {
                 document.title = "产品中心";
                 var wrapRules = getStyleRule("Product Filter");
@@ -174,22 +145,25 @@
                 var menuRules = getStyleRule("Product Filter Menu");
                 var menuHtml = '<div class="' + (menuRules ? menuRules._compiledClass : "") + ' flex-column" style="padding:20px;">';
                 var menus = productData.filter(function(r) { return r.Section === "Product Filter Menu Item"; });
+                
                 menus.forEach(function(m, i) {
                     var activeCls = i === 0 ? "active" : "";
-                    
-                    // 🌟 终极防御：把表格标题里的单引号和回车换行符统统清洗掉，防止语法断裂
-                    var safeTitle = m.Title ? m.Title.toString().replace(/'/g, "\'").replace(/
-/g, "").replace(//g, "") : "";
-                    
-                    menuHtml += '<div class="filter-menu-item ' + activeCls + '" onclick="filterProducts(this, '' + safeTitle + '')">' + m.Title + '</div>';
+                    // 🌟 终极防御：改用 data-title，告别一切单双引号语法断裂问题
+                    var safeTitle = m.Title ? m.Title.toString().replace(/"/g, "&quot;") : "";
+                    menuHtml += '<div class="filter-menu-item ' + activeCls + '" ';
+                    menuHtml += 'data-title="' + safeTitle + '" ';
+                    menuHtml += 'onclick="filterProducts(this, this.getAttribute(\'data-title\'))">';
+                    menuHtml += m.Title + '</div>';
                 });
                 menuHtml += '</div>';
                 
                 var gridRules = getStyleRule("Product Filter Content");
                 var gridHtml = '<div class="' + getLayoutClasses(gridRules) + '" style="flex:1; padding:20px;" id="product-grid">';
+                
                 productData.filter(function(r) { return r.Section === "Product Filter Content Item"; }).forEach(function(item) {
+                    var imgCss = 'width:100%; height:180px; object-fit:cover; border-radius:6px; margin-bottom:10px;';
                     gridHtml += '<div class="product-card flex-column" data-category="' + item['Category / Tag'] + '">';
-                    gridHtml += '  <img src="' + parseMediaUrl(item.Media || item['Default Picture']) + '" style="width:100%; height:180px; object-fit:cover; border-radius:6px; margin-bottom:10px;">';
+                    gridHtml += '  <img src="' + parseMediaUrl(item.Media || item['Default Picture']) + '" style="' + imgCss + '">';
                     gridHtml += '  <h3 style="font-size:18px; margin-bottom:5px;">' + item.Title + '</h3>';
                     gridHtml += '  <p style="color:#666; font-size:14px; flex:1;">' + (item.Content !== "No Data" ? item.Content : "") + '</p>';
                     gridHtml += '</div>';
@@ -201,14 +175,12 @@
                 return;
             }
 
-            // 2. 联系我们特化表单拦截
+            // 2. 联系我们拦截
             if (hash.indexOf("contact") > -1 && DB.Contact && DB.Contact.length > 0) {
                 document.title = "联系我们";
-                // 🌟 【问题4修复】支持从 Global 读取 Contact Container 独立大背景
                 var wrapRules = getStyleRule("Contact Container") || getStyleRule("Contact");
-                var html = '<div class="' + getLayoutClasses(wrapRules) + ' flex-column" style="width:100%; min-height:100vh; padding:40px 20px; align-items:center;">';
-                
-                // 🌟 【问题5修复】给 Contact Item 的大外层套上无缝无间距的容器 class
+                var css1 = 'width:100%; min-height:100vh; padding:40px 20px; align-items:center;';
+                var html = '<div class="' + getLayoutClasses(wrapRules) + ' flex-column" style="' + css1 + '">';
                 html += '  <div class="seamless-container" style="max-width:600px;">';
                 
                 var formHtml = "";
@@ -217,22 +189,27 @@
                     var cls = rRule ? rRule._compiledClass : "generic-card";
                     
                     if (row.Section === "Contact Item") {
-                        html += '<div class="' + cls + ' flex-row" style="padding:15px; background:white; border-bottom:1px solid #eee; width:100%; justify-content:space-between;">';
+                        var cCss = 'padding:15px; background:white; border-bottom:1px solid #eee; width:100%; justify-content:space-between;';
+                        html += '<div class="' + cls + ' flex-row" style="' + cCss + '">';
                         html += '  <strong>' + row.Title + '</strong><span>' + row.Content + '</span></div>';
                     }
                     if (row.Section === "Feedback") {
                         formHtml += '<h2 class="' + cls + '" style="margin-top:30px; margin-bottom:15px;">' + row.Title + '</h2>';
-                        formHtml += '<form onsubmit="handleForm(event)" class="flex-column" style="background:white; padding:25px; border-radius:8px; border:1px solid #eee; width:100%; gap:15px;">';
+                        var fCss = 'background:white; padding:25px; border-radius:8px; border:1px solid #eee; width:100%; gap:15px;';
+                        formHtml += '<form onsubmit="handleForm(event)" class="flex-column" style="' + fCss + '">';
                     }
                     if (row.Section === "Feedback Form") {
                         if (row.Button && row.Button !== "No Data") {
-                            formHtml += '<button type="submit" style="background:#4285f4; color:white; border:none; padding:12px; border-radius:6px; cursor:pointer; font-weight:bold;">' + row.Button + '</button>';
+                            var bCss = 'background:#4285f4; color:white; border:none; padding:12px; border-radius:6px; cursor:pointer; font-weight:bold;';
+                            formHtml += '<button type="submit" style="' + bCss + '">' + row.Button + '</button>';
                         } else {
                             formHtml += '<div class="flex-column" style="gap:5px;"><label style="font-weight:500;">' + row.Title + '</label>';
                             if(row.Media === "textarea") {
-                                formHtml += '<textarea name="' + row.Title + '" placeholder="' + row.Content + '" style="padding:10px; border:1px solid #ccc; border-radius:4px; height:80px; resize:none;"></textarea>';
+                                var tCss = 'padding:10px; border:1px solid #ccc; border-radius:4px; height:80px; resize:none;';
+                                formHtml += '<textarea name="' + row.Title + '" placeholder="' + row.Content + '" style="' + tCss + '"></textarea>';
                             } else {
-                                formHtml += '<input type="' + (row.Media || "text") + '" name="' + row.Title + '" placeholder="' + row.Content + '" style="padding:10px; border:1px solid #ccc; border-radius:4px;">';
+                                var iCss = 'padding:10px; border:1px solid #ccc; border-radius:4px;';
+                                formHtml += '<input type="' + (row.Media || "text") + '" name="' + row.Title + '" placeholder="' + row.Content + '" style="' + iCss + '">';
                             }
                             formHtml += '</div>';
                         }
@@ -244,34 +221,38 @@
                 return;
             }
 
-            // 3. 通用主页数据和多行嵌套打包（完美复刻 About Row 独立带 width 宽度的框效果）
+            // 3. 通用页面渲染
             var targetKey = Object.keys(DB).find(function(k) { return k.toLowerCase() === hash.toLowerCase(); }) || "Main";
             document.title = targetKey;
             
             var pageRows = DB[targetKey] || DB.Main;
             var wrapRules = getStyleRule(targetKey);
-            var html = '<div class="' + getLayoutClasses(wrapRules) + ' flex-column" style="width:100%; min-height:90vh; align-items:center;">';
+            var mCss = 'width:100%; min-height:90vh; align-items:center;';
+            var html = '<div class="' + getLayoutClasses(wrapRules) + ' flex-column" style="' + mCss + '">';
             
             pageRows.forEach(function(row) {
                 var rRule = getStyleRule(row.Section);
                 var cls = rRule ? rRule._compiledClass : "";
                 
                 if (row.Section.indexOf("Row") > -1) {
-                    // 🌟 【问题2修复】赋予 About Row 独立的、带特定宽度的盒模型外壳
-                    html += '<div class="' + cls + ' flex-column" style="background:white; border:1px solid #eee; border-radius:8px; padding:20px; margin:15px 0; box-shadow:0 2px 8px rgba(0,0,0,0.02);">';
+                    var rCss = 'background:white; border:1px solid #eee; border-radius:8px; padding:20px; margin:15px 0; box-shadow:0 2px 8px rgba(0,0,0,0.02);';
+                    html += '<div class="' + cls + ' flex-column" style="' + rCss + '">';
                     if (row.Title !== "No Data") html += '<h2>' + row.Title + '</h2>';
                     if (row.Content !== "No Data") html += '<p style="color:#555; margin-top:10px;">' + row.Content + '</p>';
-                    if (row.Media && row.Media !== "No Data" && row.Media !== "x") html += '<img src="' + parseMediaUrl(row.Media) + '" style="max-width:100%; border-radius:4px; margin-top:10px;">';
+                    if (row.Media && row.Media !== "No Data" && row.Media !== "x") {
+                        html += '<img src="' + parseMediaUrl(row.Media) + '" style="max-width:100%; border-radius:4px; margin-top:10px;">';
+                    }
                     html += '</div>';
                 } else if (row.Section === "Hero") {
-                    html += '<div class="' + cls + '" style="width:100%; position:relative; overflow:hidden;">';
+                    var hCss = 'width:100%; position:relative; overflow:hidden;';
+                    html += '<div class="' + cls + '" style="' + hCss + '">';
                     html += '  <img src="' + parseMediaUrl(row.Media) + '" style="width:100%; height:100%; object-fit:cover;">';
                     html += '</div>';
                 } else {
-                    html += '<div class="' + cls + '" style="padding:20px; width:100%; text-align:center;"><h2>' + (row.Title !== "No Data" ? row.Title : "") + '</h2></div>';
+                    html += '<div class="' + cls + '" style="padding:20px; width:100%; text-align:center;">';
+                    html += '<h2>' + (row.Title !== "No Data" ? row.Title : "") + '</h2></div>';
                 }
             });
-            
             contentDiv.innerHTML = html + '</div>';
         }
 
@@ -302,8 +283,6 @@
         function initNavigation() {
             var navDiv = document.getElementById("navigation-bar");
             var nRules = getStyleRule("Navigation");
-            
-            // 🌟 强制赋予置顶横条 space-between 物理对齐属性
             navDiv.className = (nRules ? nRules._compiledClass : "") + " flex-container flex-row";
             navDiv.style.justifyContent = "space-between";
             
@@ -313,7 +292,6 @@
             DB.Navigation.forEach(function(row) {
                 var rRule = getStyleRule(row.Section);
                 var linkCls = rRule ? rRule._compiledClass : "";
-                
                 var rawLink = row['Page Link'] || row.html || row.Link || ""; 
                 var safeLink = rawLink.toString().toLowerCase();
                 var safeTitle = row.Title;
@@ -322,7 +300,6 @@
                 if (row.Section === "Navigation Item") leftMenu += link;
                 if (row.Section === "Navigation Right") rightMenu += link;
             });
-            
             navDiv.innerHTML = leftMenu + "</div>" + rightMenu + "</div>";
         }
 
